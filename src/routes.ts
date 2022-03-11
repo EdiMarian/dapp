@@ -2,7 +2,6 @@ import { ComponentType } from 'react';
 import { dAppName } from 'config';
 import withPageTitle from './components/PageTitle';
 
-import Admin from './pages/Admin';
 import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
 
@@ -19,8 +18,7 @@ export const routeNames = {
   transaction: '/transaction',
   unlock: '/unlock',
   ledger: '/ledger',
-  walletconnect: '/walletconnect',
-  admin: '/admin'
+  walletconnect: '/walletconnect'
 };
 
 const routes: Array<RouteType> = [
@@ -34,17 +32,12 @@ const routes: Array<RouteType> = [
     title: 'Dashboard',
     component: Dashboard,
     authenticatedRoute: true
-  },
-  {
-    path: routeNames.admin,
-    title: 'Admin',
-    component: Admin
   }
 ];
 
 const mappedRoutes = routes.map((route) => {
   const title = route.title
-    ? `${route.title} • Elrond ${dAppName}`
+    ? `${route.title} • ${dAppName}`
     : `Elrond ${dAppName}`;
 
   const requiresAuth = Boolean(route.authenticatedRoute);

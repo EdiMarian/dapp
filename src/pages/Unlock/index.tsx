@@ -9,8 +9,6 @@ import Ledger from 'assets/Ledger';
 import Logo from 'assets/Logo';
 import Maiar from 'assets/Maiar';
 
-import { network } from 'config';
-
 import styles from './styles.module.scss';
 
 interface ConnectionType {
@@ -71,11 +69,9 @@ const Unlock: React.FC = () => {
           <Logo />
         </div>
 
-        <strong className={styles.heading}>Elrond Delegation Manager</strong>
+        <strong className={styles.heading}>Estar.Games</strong>
 
-        <div className={styles.description}>
-          {`Delegate Elrond (${network.egldLabel}) and earn up to 25% APY!`}
-        </div>
+        <div className={styles.description}>Lorem ipsum dolor sit amet.</div>
 
         <div className={styles.connects}>
           {connects.map((connect: ConnectionType) => (

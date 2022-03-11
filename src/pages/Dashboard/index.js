@@ -1,29 +1,20 @@
 import React, { useEffect, useState } from 'react';
-
 import { useGetAccountInfo } from '@elrondnetwork/dapp-core';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
-
-import Cards from 'components/Cards';
-import Heading from 'components/Heading';
-import Stake from 'components/Stake';
-import Withdrawals from 'components/Withdrawals';
-
-import useGlobalData from '../../hooks/useGlobalData';
-
+import Cards from '../../components/Cards';
+import Nfts from '../../components/Nfts';
 import styles from './styles.module.scss';
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
   const { address } = useGetAccountInfo();
-  const [loading, setLoading] = useState<boolean>(true);
-
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const handleRedirect = () =>
     Boolean(address) ? setLoading(false) : navigate('/unlock');
 
   useEffect(handleRedirect, [address]);
-  useGlobalData();
 
   if (loading) {
     return (
@@ -43,14 +34,12 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className={styles.dashboard}>
-      <Heading />
-
+    <div
+      className={styles.dashboard}
+      style={{ display: 'flex', flexDirection: 'column' }}
+    >
       <Cards />
-
-      <Stake />
-
-      <Withdrawals />
+      <Nfts />
     </div>
   );
 };

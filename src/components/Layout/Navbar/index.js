@@ -1,34 +1,28 @@
 import * as React from 'react';
-import { ReactNode } from 'react';
+import { useState, useEffect } from 'react';
 
 import { logout, useGetAccountInfo } from '@elrondnetwork/dapp-core';
 import { faWallet, faPowerOff } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 import Logo from 'assets/Logo';
-import { network } from 'config';
-import { denominated } from 'helpers/denominate';
 
 import modifiable from 'helpers/modifiable';
 import styles from './styles.module.scss';
+import axios from 'axios';
 
-interface ButtonsType {
-  icon: ReactNode;
-  label: string;
-  onClick?: () => void;
-  copy?: boolean;
-}
-
-const Navbar: React.FC = () => {
-  const { address, account } = useGetAccountInfo();
-  const buttons: Array<ButtonsType> = [
-    {
-      icon: <Logo />,
-      label: `${denominated(account.balance)} ${network.egldLabel}`
-    },
+const Navbar = () => {
+  const { address } = useGetAccountInfo();
+  const [heroTag, setHeroTag] = useState('');
+  const fetchHeroTag = `https://api.elrond.com/accounts/${address}`;
+  const getHeroTag = () => {
+    axios.get(fetchHeroTag).then((res) => setHeroTag(res.data.username));
+  };
+  useEffect(() => getHeroTag(), []);
+  const buttons = [
     {
       icon: <FontAwesomeIcon icon={faWallet} size='lg' />,
-      label: address,
+      label: heroTag ? `@${heroTag.replace('.elrond', '')}` : address,
       onClick: () => navigator.clipboard.writeText(address)
     },
     {
@@ -45,7 +39,7 @@ const Navbar: React.FC = () => {
           <Logo />
         </span>
 
-        <span className={styles.title}>Delegation Manager</span>
+        <span className={styles.title}>Estar</span>
       </Link>
 
       <div className={styles.buttons}>
