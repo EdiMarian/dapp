@@ -39,5 +39,5 @@ export const network: NetworkType = {
   walletAddress: 'https://wallet.elrond.com/dapp/init',
   apiAddress: 'https://api.elrond.com',
   gatewayAddress: 'https://gateway.elrond.com',
-  explorerAddress: 'https://explorer.elrond.com',
+  explorerAddress: 'https://explorer.elrond.com'
 };
