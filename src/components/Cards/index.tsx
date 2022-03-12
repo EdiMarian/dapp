@@ -30,15 +30,9 @@ const Cards: React.FC = () => {
   const mintedUrl =
     'https://api.elrond.com/nfts/count?collection=EQUISTAR-3f393f';
   const estarWalletUrl = `https://api.elrond.com/accounts/${address}/tokens/ESTAR-afaaf0`;
-  const [estarWallet, setEstarWallet] = useState(0);
-  const fetchEstarWallet = () => {
-    axios.get(estarWalletUrl).then((res) => {
-      setEstarWallet(res.data.balance);
-    });
-  };
-  const estarWalletDec = estarWallet / 100;
   const walletNftsUrl = `https://api.elrond.com/accounts/${address}/nfts?collection=EQUISTAR-3f393f`;
   const [minted, setMinted] = useState();
+  const [estarWallet, setEstarWallet] = useState(0);
   const [nftWallet, setNftWallet] = useState();
 
   const getNftsMinted = () => {
@@ -46,6 +40,15 @@ const Cards: React.FC = () => {
       setMinted(res.data);
     });
   };
+  const resp = new XMLHttpRequest();
+  resp.open('GET', estarWalletUrl);
+
+  const fetchEstarWallet = () => {
+    axios.get(estarWalletUrl).then((res) => {
+      setEstarWallet(res.data.balance);
+    });
+  };
+  const estarWalletDec = estarWallet / 100;
 
   const getNftsWallet = () => {
     axios.get(walletNftsUrl).then((res) => {
