@@ -69,9 +69,11 @@ const Unlock: React.FC = () => {
           <Logo />
         </div>
 
-        <strong className={styles.heading}>Estar.Games</strong>
+        <strong className={styles.heading}>EstarGames</strong>
 
-        <div className={styles.description}>Lorem ipsum dolor sit amet.</div>
+        <div className={styles.description}>
+          Connect with your wallet to acces.
+        </div>
 
         <div className={styles.connects}>
           {connects.map((connect: ConnectionType) => (
