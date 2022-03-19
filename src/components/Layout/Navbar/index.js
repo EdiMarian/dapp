@@ -2,9 +2,13 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 
 import { logout, useGetAccountInfo } from '@elrondnetwork/dapp-core';
-import { faWallet, faPowerOff } from '@fortawesome/free-solid-svg-icons';
+import {
+  faWallet,
+  faPowerOff,
+  faHorse
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from 'assets/Logo';
 
 import modifiable from 'helpers/modifiable';
@@ -12,6 +16,11 @@ import styles from './styles.module.scss';
 import axios from 'axios';
 
 const Navbar = () => {
+  let navigate = useNavigate();
+  const routeChange = () => {
+    let path = '/race';
+    navigate(path);
+  };
   const { address } = useGetAccountInfo();
   const [heroTag, setHeroTag] = useState('');
   const fetchHeroTag = `https://api.elrond.com/accounts/${address}`;
@@ -21,7 +30,7 @@ const Navbar = () => {
   useEffect(() => getHeroTag(), []);
   const buttons = [
     {
-      icon: <FontAwesomeIcon icon={faWallet} size='lg' />,
+      icon: '',
       label: heroTag ? `@${heroTag.replace('.elrond', '')}` : address,
       onClick: () => navigator.clipboard.writeText(address)
     },
@@ -29,6 +38,11 @@ const Navbar = () => {
       icon: <FontAwesomeIcon icon={faPowerOff} />,
       label: 'Disconnect',
       onClick: () => logout(`${location.origin}/unlock`)
+    },
+    {
+      icon: <FontAwesomeIcon icon={faHorse} />,
+      label: 'Race',
+      onClick: () => routeChange()
     }
   ];
 

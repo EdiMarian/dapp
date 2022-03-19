@@ -4,6 +4,8 @@ import withPageTitle from './components/PageTitle';
 
 import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
+import Race from './pages/Race';
+import Track from 'pages/Track';
 
 export interface RouteType {
   path: string;
@@ -18,7 +20,9 @@ export const routeNames = {
   transaction: '/transaction',
   unlock: '/unlock',
   ledger: '/ledger',
-  walletconnect: '/walletconnect'
+  walletconnect: '/walletconnect',
+  race: '/race',
+  track: '/race/track/:id'
 };
 
 const routes: Array<RouteType> = [
@@ -32,12 +36,22 @@ const routes: Array<RouteType> = [
     title: 'Dashboard',
     component: Dashboard,
     authenticatedRoute: true
+  },
+  {
+    path: routeNames.race,
+    title: 'Race',
+    component: Race
+  },
+  {
+    path: routeNames.track,
+    title: 'Track',
+    component: Track
   }
 ];
 
 const mappedRoutes = routes.map((route) => {
   const title = route.title
-    ? `${route.title} • ${dAppName}`
+    ? `${dAppName} • ${route.title}`
     : `Elrond ${dAppName}`;
 
   const requiresAuth = Boolean(route.authenticatedRoute);
