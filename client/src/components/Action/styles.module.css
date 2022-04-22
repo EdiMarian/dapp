@@ -1,0 +1,65 @@
+.action {
+  display: block;
+}
+
+.action .trigger {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.modal {
+  padding: 30px;
+  text-align: center;
+  background: #242526;
+  border: 1px solid #49494d;
+  -webkit-box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.16);
+          box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.16);
+  border-radius: 12px;
+}
+
+.modal .title {
+  margin-bottom: 15px;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 1;
+  color: #ffffff;
+}
+
+.modal .description {
+  font-size: 14px;
+  line-height: 1.25;
+  text-align: center;
+  margin: 0 auto;
+  color: #9ba5b4;
+  max-width: 300px;
+}
+
+.modal .render {
+  margin-top: 30px;
+}
+
+.modal .render .buttons {
+  margin-top: 30px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.modal .render .buttons .button {
+  width: 100%;
+  background: #303234;
+  border-radius: 7px;
+  color: white;
+  padding: 10px;
+  border: none;
+}
+
+.modal .render .buttons .button--blue {
+  background: #2044f5;
+  margin-left: 10px;
+}
+/*# sourceMappingURL=styles.module.css.map */

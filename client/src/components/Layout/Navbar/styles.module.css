@@ -1,0 +1,117 @@
+.nav {
+  padding: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.nav .logo {
+  margin-right: 15px;
+}
+
+.nav .title {
+  font-size: 24px;
+  font-weight: 300;
+  text-decoration: none;
+  color: #9ba5b4;
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .nav .title {
+    display: block;
+  }
+}
+
+.nav .heading {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.nav .heading:hover {
+  text-decoration: none;
+}
+
+.nav .buttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.nav .button {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 15px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  font-size: 10px;
+  color: white;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  max-height: 45px;
+}
+
+.nav .button:first-child .icon {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  .nav .button span {
+    font-size: 14px;
+  }
+}
+
+.nav .button:not(:first-child) {
+  margin-left: 15px;
+}
+
+@media (max-width: 767px) {
+  .nav .button:not(:first-child) span {
+    display: none;
+  }
+}
+
+.nav .button--clickable {
+  cursor: pointer;
+}
+
+.nav .button--clickable:last-child {
+  color: #808ea3;
+}
+
+.nav .icon {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .nav .icon {
+    margin-right: 10px;
+  }
+}
+
+.nav .icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.nav .icon svg path {
+  fill: #808ea3;
+}
+/*# sourceMappingURL=styles.module.css.map */

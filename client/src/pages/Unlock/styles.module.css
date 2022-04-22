@@ -1,0 +1,213 @@
+.unlock {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+@media (min-width: 992px) {
+  .unlock {
+    height: 100vh;
+  }
+}
+
+.unlock .wrapper {
+  background: rgba(0, 6, 13, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-radius: 12px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 100px 30px 30px;
+  padding: 30px;
+  text-align: center;
+}
+
+@media (min-width: 992px) {
+  .unlock .wrapper {
+    padding: 0 60px 60px;
+  }
+}
+
+.unlock .wrapper .logo {
+  background: #303234;
+  border: 1px solid #49494d;
+  -webkit-box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.12);
+          box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.12);
+  border-radius: 50%;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100px;
+  height: 100px;
+  position: relative;
+  margin: -50px 0 30px;
+}
+
+.unlock .wrapper .heading {
+  line-height: 1;
+  color: white;
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+.unlock .wrapper .description {
+  line-height: 1;
+  font-size: 18px;
+  color: #808ea3;
+}
+
+.unlock .wrapper .connects {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-top: 45px;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.unlock .wrapper .connects button,
+.unlock .wrapper .connects a {
+  border: none;
+  background: none;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.unlock .wrapper .connects button:active:focus,
+.unlock .wrapper .connects a:active:focus {
+  background: none;
+}
+
+.unlock .wrapper .connects .connect {
+  cursor: pointer;
+  background: rgba(36, 37, 38, 0.5);
+  border: 1px solid #49494d;
+  -webkit-box-shadow: 0px 6px 24px rgba(0, 0, 0, 0.12);
+          box-shadow: 0px 6px 24px rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  width: 160px;
+  padding: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin: 0 0.5rem 1rem;
+}
+
+.unlock .wrapper .connects .connect:hover {
+  background: #303234;
+}
+
+.unlock .wrapper .connects .connect .title {
+  color: rgba(128, 142, 163, 0.9);
+  margin-bottom: 15px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.unlock .wrapper .connects .connect .icon {
+  border-radius: 16px;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 15px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.unlock .wrapper .connects .connect .icon svg {
+  max-width: 30px;
+  max-height: 30px;
+}
+
+.unlock .wrapper .connects .connect .name {
+  color: #f8f8ff;
+  font-size: 14px;
+}
+
+.qr {
+  border-radius: 12px;
+  padding: 30px;
+  background: #242526;
+  position: relative;
+}
+
+.qr .close {
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: calc(100% + 5px);
+  border-radius: 50%;
+  background: #242526;
+  padding: 10px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.qr .close svg {
+  width: 15px;
+  height: 15px;
+}
+
+.qr .close svg path {
+  fill: white;
+}
+
+.qr .code {
+  margin-bottom: 30px;
+}
+
+.qr .code svg {
+  border-radius: 12px;
+}
+
+.qr .subheading {
+  line-height: 1;
+  color: white;
+  font-size: 20px;
+  text-align: center;
+}
+/*# sourceMappingURL=styles.module.css.map */
