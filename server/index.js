@@ -37,7 +37,7 @@ agenda.define("regeneration", async (job) => {
 
 const io = require('socket.io')(process.env.PORT, {
   cors: {
-    origin: ['https://176.223.121.41:3000', 'http://176.223.121.41:3000'],
+    origin: ['https://176.223.121.41', 'http://176.223.121.41'],
     method: ['GET', 'POST', 'PATCH']
   }
 });
