@@ -27,7 +27,7 @@ const Button = (props) => {
 
   useEffect(() => {
     // Connect socket.io
-    const s = io('http://176.223.121.41:4000');
+    const s = io('http://176.223.121.41/server');
     s.emit('get-nfts', address);
     function handler (data) {
       setNft(data);

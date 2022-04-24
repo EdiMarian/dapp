@@ -9,7 +9,7 @@ const Nfts = (props) => {
   const { address } = useGetAccountInfo();
   const [nft, setNft] = useState([]);
   useEffect(() => {
-   const s = io('http://176.223.121.41:4000');
+   const s = io('http://176.223.121.41/server');
    s.emit('get-nfts', address);
    function handler (data) {
       setNft(data);
