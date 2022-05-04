@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useGetAccountInfo } from '@elrondnetwork/dapp-core';
 import { io } from 'socket.io-client';
+import { backend } from '../../../config';
 
 const RaceView = () => {
   const { address } = useGetAccountInfo();
@@ -18,7 +19,7 @@ const RaceView = () => {
     Boolean(address) ? setLoading(false) : navigate('/unlock');
 
   useEffect(() => {
-    const s = io('http://176.223.121.41:4000');
+    const s = io(backend);
     s.emit('get-race', {id, address});
     const handler = ({race, status, authorized}) => {
       if(race != null) {
@@ -59,7 +60,7 @@ const RaceView = () => {
                             {race.player.map((player) => (
                               <div
                                 key={player.address}
-                                className='col-12 col-md-4'
+                                className='col-12 col-md-4 mb-2'
                               >
                                 <div className='card'>
                                   <div className='card-body'>
@@ -71,7 +72,7 @@ const RaceView = () => {
                                     <h4 className='text-center'>
                                       {player.horse}
                                     </h4>
-                                    <h1>{player.address}</h1>
+                                    <h5>Address: <small>{player.address}</small></h5>
                                   </div>
                                 </div>
                               </div>
@@ -88,14 +89,14 @@ const RaceView = () => {
                     </div>
                     <div className='row mt-3'>
                       <div className='col-12 col-md-4'>
-                        <div className='card mt-md-2'>
+                        <div className='card mt-md-3'>
                           <div className="card-body">
                             <img
                               className='d-block mx-auto'
                               src={race.winners[1].horseUrl}
                               height='250px'
                             />
-                            <h1>{race.winners[1].address}</h1>
+                            <h5>Address: <small>{race.winners[1].address}</small></h5>
                             <h4>Score: {race.winners[1].score}</h4>
                           </div>
                         </div>
@@ -108,20 +109,20 @@ const RaceView = () => {
                               src={race.winners[0].horseUrl}
                               height='250px'
                             />
-                            <h1>{race.winners[0].address}</h1>
+                            <h5>Address: <small>{race.winners[0].address}</small></h5>
                             <h4>Score: {race.winners[0].score}</h4>
                           </div>
                         </div>
                       </div>
                       <div className='col-12 col-md-4'>
-                        <div className='card mt-md-2'>
+                        <div className='card mt-md-4'>
                           <div className="card-body">
                             <img
                               className='d-block mx-auto'
                               src={race.winners[2].horseUrl}
                               height='250px'
                             />
-                            <h1>{race.winners[2].address}</h1>
+                            <h5>Address: <small>{race.winners[2].address}</small></h5>
                             <h4>Score: {race.winners[2].score}</h4>
                           </div>
                         </div>

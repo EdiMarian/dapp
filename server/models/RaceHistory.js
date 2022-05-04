@@ -13,6 +13,14 @@ const RaceHistory = new mongoose.Schema({
             type: String,
             required: true
       },
+      entryFee: {
+            type: Number,
+            required: true
+      },
+      with: {
+            type: String,
+            required: true
+      },
       winners: [],
       player: [],
       date: {

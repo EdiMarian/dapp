@@ -5,6 +5,9 @@ import withPageTitle from './components/PageTitle';
 import Home from './pages/Home';
 import Race from './pages/Race';
 import RaceView from './pages/Race/View';
+import Stable from 'pages/Stable';
+import Tournament from 'pages/Tournament';
+import Leaderboard from 'pages/Leaderboard';
 
 export interface RouteType {
   path: string;
@@ -20,7 +23,10 @@ export const routeNames = {
   ledger: '/ledger',
   walletconnect: '/walletconnect',
   race: '/race',
-  raceView: '/race/:id'
+  raceView: '/race/:id',
+  stable: '/stable',
+  tournament: '/tournament',
+  leaderboard: '/leaderboard'
 };
 
 const routes: Array<RouteType> = [
@@ -36,8 +42,23 @@ const routes: Array<RouteType> = [
   },
   {
     path: routeNames.raceView,
-    title: 'Race :id',
+    title: 'Race View',
     component: RaceView
+  },
+  {
+    path: routeNames.stable,
+    title: 'Stable',
+    component: Stable
+  },
+  {
+    path: routeNames.tournament,
+    title: 'Tournament',
+    component: Tournament
+  },
+  {
+    path: routeNames.leaderboard,
+    title: 'Leaderboard',
+    component: Leaderboard
   }
 ];
 

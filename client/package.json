@@ -38,16 +38,10 @@
   "scripts": {
     "start": "HTTPS=true react-scripts start",
     "start-mainnet": "npm run copy-mainnet-config & npm run start",
-    "start-testnet": "npm run copy-testnet-config & npm run start",
-    "start-devnet": "npm run copy-devnet-config & npm run start",
     "build": "react-scripts build",
-    "build-testnet": "npm run copy-testnet-config & npm run build",
-    "build-devnet": "npm run copy-devnet-config & npm run build",
     "build-mainnet": "npm run copy-mainnet-config & npm run build",
     "test": "react-scripts test",
-    "copy-testnet-config": "cp ./src/config.testnet.tsx ./src/config.tsx",
     "copy-mainnet-config": "cp ./src/config.mainnet.tsx ./src/config.tsx",
-    "copy-devnet-config": "cp ./src/config.devnet.tsx ./src/config.tsx",
     "eject": "react-scripts eject",
     "lint": "eslint --ext js,ts,tsx src"
   },

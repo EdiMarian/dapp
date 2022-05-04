@@ -21,7 +21,7 @@ const Race = () => {
           <div key={race.id} className='col-12 col-md-4 mb-4'>
             <div className='card bg-light'>
               <div className='card-header'>
-                <h3 className='text-center'>Equistar race #{race.id}</h3>
+                <h3 className='text-center'>{race.name} #{race.id}</h3>
               </div>
               <div className="card-body">
                 <h5>{race.description}</h5>
@@ -35,19 +35,17 @@ const Race = () => {
                     ))}
                   </span>
                   {race.entryFee == 0 ? (
-                    <span>Entry fee: Free</span>
+                    <span>Entry fee: 25 stamina</span>
                   ) : (
-                    <span>Entry fee: {race.entryFee}$</span>
+                    <span>Entry fee: {race.entryFee} {
+                      race.withEstar ? 'eStar' : 'EGLD'
+                    }</span>
                   )}
                 </div>
               </div>
               <div className='card-footer'>
                 <Button
-                  className='d-block mx-auto'
-                  id={race.id}
-                  color={race.color}
-                  name={`Race #${race.id}`}
-                  fee={race.entryFee}
+                  race={race}
                 />
               </div>
             </div>

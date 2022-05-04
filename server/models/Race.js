@@ -13,6 +13,14 @@ const Race = new mongoose.Schema({
             type: String,
             required: true
       },
+      entryFee: {
+            type: Number,
+            required: true
+      },
+      with: {
+            type: String,
+            required: true
+      },
       player: [
             {
                   address: {

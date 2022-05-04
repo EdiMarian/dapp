@@ -7,37 +7,19 @@ const moment = require('moment');
 const Race = require('./models/Race');
 const Horse = require('./models/Horse');
 const RaceHistory = require('./models/RaceHistory');
+const Stable = require('./models/Stable');
+const Tournament = require('./models/Tournament');
+const Reward = require('./models/Reward');
 
 dotenv.config();
 
 mongoose.connect(process.env.DB_CONNECTION);
 
-// Stamina regeneration
-
-const agenda = new Agenda({ db: { address: process.env.DB_CONNECTION } });
-
-agenda.define("regeneration", async (job) => {
-  const data = await Horse.find({stamina: {$in: [0,25,50,75]}});
-  for (let i = 0; i < data.length; i++) {
-    if(data[i].stamina <= 75) {
-      await Horse.findOneAndUpdate({name: data[i].name}, {stamina: data[i].stamina + 25});
-    }
-  }
-  console.log("Horse stamina has been regenerated.");
-});
-
-(async function () {
-  await agenda.start();
-
-  await agenda.every("6 hours", "regeneration");
-})();
-
-
 // FrontEnd-to-Backend comunication
 
 const io = require('socket.io')(process.env.PORT, {
   cors: {
-    origin: ['https://176.223.121.41', 'http://176.223.121.41'],
+    origin: ['https://localhost:3000', 'http://localhost:3000'],
     method: ['GET', 'POST', 'PATCH']
   }
 });
@@ -54,8 +36,107 @@ const http = axios.create({
 });
 
 const collection = 'EQUISTAR-3f393f';
+const token = 'ESTAR-afaaf0';
 
-//
+const stables = [
+    {
+      level: 1,
+      price: 100000,
+      staminaMax: 110,
+      hash: 'ESDTTransfer@45535441522d616661616630@0186a0'
+    },
+    {
+      level: 2,
+      price: 500000,
+      staminaMax: 130,
+      hash: 'ESDTTransfer@45535441522d616661616630@07a120'
+    },
+    {
+      level: 3,
+      price: 1000000,
+      staminaMax: 150,
+      hash: 'ESDTTransfer@45535441522d616661616630@0f4240'
+    },
+    {
+      level: 4,
+      price: 2000000,
+      staminaMax: 200,
+      hash: 'ESDTTransfer@45535441522d616661616630@1e8480'
+    },
+    {
+      level: 5,
+      price: 5000000,
+      staminaMax: 250,
+      hash: 'ESDTTransfer@45535441522d616661616630@4c4b40'
+    },
+  ];
+
+  // Stamina regeneration
+
+  const agenda = new Agenda({ db: { address: process.env.DB_CONNECTION } });
+
+  async function getHorsesToRegenerate() {
+    let staminaMax = 0;
+    let data = [];
+
+    const stable = await Stable.find();
+    for (let i = 0; i < stable.length; i++) {
+      if(stable[i].level == 1) {
+        staminaMax = 110;  
+      } else if(stable[i].level == 2) {
+        staminaMax = 130;  
+      } else if(stable[i].level == 3) {
+        staminaMax = 150;  
+      } else if(stable[i].level == 4) {
+        staminaMax = 200;  
+      } else if(stable[i].level == 5) {
+        staminaMax = 250;  
+      }
+      const horses = await getNfts(stable[i].address);
+      for (let j = 0; j < horses.length; j++) {
+        data.push({horse: horses[j].name, staminaMax: staminaMax});
+      }
+    }
+
+    const horse_nS = await Horse.find({stamina: {$lt: 99}});
+
+    for (let m = 0; m < horse_nS.length; m++) {
+      if(!data.find(({horse}) => horse === horse_nS[m].name)) {
+        data.push({horse: horse_nS[m].name, staminaMax: 100});
+      }
+    }
+
+    return data;
+  };
+
+  agenda.define("regeneration", async (job) => {
+    var staminaAd = 0;
+    const horses = await getHorsesToRegenerate();
+    for (let i = 0; i < horses.length; i++) {
+      staminaAd = horses[i].staminaMax / 4;
+      const horse = await Horse.findOne({name: horses[i].horse});
+      if(horse.stamina < horses[i].staminaMax) {
+        if(horse.stamina + staminaAd > horses[i].staminaMax) {
+          await Horse.findOneAndUpdate({name: horses[i].horse}, {
+            stamina: horses[i].staminaMax
+          });
+          console.log('Horse ' + horse.name + ' was regenerated.');
+        } else {
+          await Horse.findOneAndUpdate({name: horses[i].horse}, {
+            stamina: horse.stamina + staminaAd
+          });
+          console.log('Horse ' + horse.name + ' was regenerated.');
+        }
+      }
+    }
+    console.log("Horse stamina has been regenerated.");
+  });
+
+  (async function () {
+    await agenda.start();
+
+    await agenda.every("6 hours", "regeneration");
+  })();
 
 function setDelay(ms) {
   return new Promise((resolve, reject) => {
@@ -68,16 +149,41 @@ function makeid(length) {
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
     for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * 
- charactersLength));
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
    }
    return result;
 }
 
+async function NbNftsMint() {
+  try {
+    const { data } = await http.get('/nfts/count?collection=' + collection);
+    return {
+      data: data,
+      success: true
+    };
+  } catch (error) {
+    return {
+      data: error.response.data,
+      success: false
+    };
+  }
+};
+
+async function fetchEstarWallet(wallet) {
+  try {
+    const { data } = await http.get(
+      '/accounts/' + wallet + '/tokens?identifier=' + token
+    );
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
+
 async function getNfts(address) {
   var nfts = [];
   const { data } = await http.get(
-      '/accounts/' + address + '/nfts?collection=' + collection
+      '/accounts/' + address + '/nfts?size=10000&collection=' + collection
   );
   for(let i = 0; i < data.length; i++) {
     const hrs = await Horse.findOne({name: data[i].name});
@@ -118,6 +224,8 @@ async function createRace(data) {
     _id: idI,
     id: data.raceId,
     bonus: Bonus[Math.floor(Math.random() * Bonus.length)],
+    entryFee: data.entryFee,
+    with: data.with,
     player: [
       {
         address: data.address,
@@ -129,6 +237,8 @@ async function createRace(data) {
     date: moment().format("DD/MM/YYYY HH:mm")
   });
   CreateRace.save();
+
+  return idI;
 }
 
 async function getSlots(id) {
@@ -148,6 +258,8 @@ async function updatePlayers(data) {
     }
   }   
   await Race.updateOne({id: data.raceId}, { $push: {player: data}});
+
+  return race._id;
 }
 
 async function bonus(bonus, horse) {
@@ -224,15 +336,152 @@ async function getWinners(data) {
    return winners;
 }
 
+function calculateReward(fee, percent) {
+  return ((((fee * 8) * 95) / 100) * percent) / 100;
+}
+
+async function updatePlayersReward(winners, positions, exist, payWith) {
+  if(exist) {
+    const reward = await Reward.findOne({address: winners.address});
+    if(payWith == 'ESTAR') {
+      switch (winners.position) {
+        case 1:
+          await Reward.findOneAndUpdate(
+            {address: winners.address}, {estar:
+              reward.estar !== undefined ? reward.estar + positions.first :
+              0 + positions.first
+            }
+          )
+          break;
+        case 2:
+          await Reward.findOneAndUpdate(
+            {address: winners.address}, {estar:
+              reward.estar !== undefined ? reward.estar + positions.second :
+              0 + positions.second
+            }
+          )
+          break;
+        case 3:
+          await Reward.findOneAndUpdate(
+            {address: winners.address}, {estar:
+              reward.estar !== undefined ? reward.estar + positions.second :
+              0 + positions.second
+            }
+          )
+      break;
+      }
+    } else {
+      switch (winners.position) {
+        case 1:
+          await Reward.findOneAndUpdate(
+            {address: winners.address}, {egld:
+              reward.egld !== undefined ? reward.egld + positions.first :
+              0 + positions.first
+            }
+          )
+          break;
+        case 2:
+          await Reward.findOneAndUpdate(
+            {address: winners.address}, {egld:
+              reward.egld !== undefined ? reward.egld + positions.second :
+              0 + positions.second
+            }
+          )
+          break;
+        case 3:
+          await Reward.findOneAndUpdate(
+            {address: winners.address}, {egld:
+              reward.egld !== undefined ? reward.egld + positions.third :
+              0 + positions.third
+            }
+          )
+        break;
+      }
+    }
+  } else {
+    if(payWith == 'ESTAR') {
+      switch (winners.position) {
+        case 1:
+          const new_Item = new Reward({
+            address: winners.address,
+            estar: positions.first
+          });
+          new_Item.save();
+          break;
+        case 2:
+          const new_Item2 = new Reward({
+            address: winners.address,
+            estar: positions.second
+          });
+          new_Item2.save();
+          break;
+        case 3:
+          const new_Item3 = new Reward({
+            address: winners.address,
+            estar: positions.third
+          });
+          new_Item3.save();
+        break;
+      }
+    } else {
+      switch (winners.position) {
+        case 1:
+          const new_Item = new Reward({
+            address: winners.address,
+            egld: positions.first
+          });
+          new_Item.save();
+          break;
+        case 2:
+          const new_Item2 = new Reward({
+            address: winners.address,
+            egld: positions.second
+          });
+          new_Item2.save();
+          break;
+        case 3:
+          const new_Item3 = new Reward({
+            address: winners.address,
+            egld: positions.third
+          });
+          new_Item3.save();
+        break;
+      }
+    }
+  }
+}
+
+async function sendToWinnerReward(winners, entryFee, payWith) {
+  const positions = {
+    first: await calculateReward(entryFee, 46),
+    second: await calculateReward(entryFee, 33.5),
+    third: await calculateReward(entryFee, 20.5)
+  }
+
+  if(winners != null) {
+    for(let i = 0; i < winners.length; i++) {
+      const reward = await Reward.findOne({address: winners[i].address});
+      if(reward != null) {
+        await updatePlayersReward(winners[i], positions, true, payWith);
+      } else {
+        await updatePlayersReward(winners[i], positions, false, payWith);
+      }
+    }
+  }
+}
+
 async function startGame(id) {
   const data = await Race.findOne({id: id});
   const result = await calculateScore(data);
   const winners = await getWinners(result, data);
   await setDelay(120000);
+  await sendToWinnerReward(winners, data.entryFee, data.with);
   const raceHS = new RaceHistory({
     _id: data._id,
     raceId: id,
     bonus: data.bonus,
+    entryFee: data.entryFee,
+    with: data.with,
     winners: winners,
     player: result,
     date: data.date
@@ -252,9 +501,15 @@ async function startGame(id) {
 }
 
 io.on('connection', socket => {
-  socket.on('get-nfts', async address => {
-    const data = await getNfts(address);
-    socket.emit('recive-nfts', data);
+  socket.on('get-status', async address => {
+    const mints = await NbNftsMint();
+    const estar = await fetchEstarWallet(address);
+    let balance = 0;
+    if(estar[0] != undefined) {
+      balance = await Number(estar[0].balance) / 100;
+    }
+    const nfts = await getNfts(address);
+    socket.emit('recive-status', nfts, mints.data, balance);
   });
   socket.on('get-available', async av => {
     const authorized = await checkWalletInRace(av.id, av.address)
@@ -279,18 +534,19 @@ io.on('connection', socket => {
   });
   socket.on('enter-race', async data => {
     var message = '';
+    var raceCr = '';
     const exist = await checkExist(data.raceId);
     if(!exist) {
-      await createRace(data);
+      raceCr = await createRace(data);
       message = `You entered the race with ${data.horse}`;
     } else {
       const slots = await getSlots(data.raceId);
       if(slots == 7) {
           message = `You entered the race with ${data.horse}, and the game began.`;
-          await updatePlayers(data);
+          raceCr = await updatePlayers(data);
           startGame(data.raceId);
       } else if(slots != 7 && slots < 8) {
-          await updatePlayers(data);
+         raceCr = await updatePlayers(data);
           message = `You entered the race with ${data.horse}`;
       } else {
         message = 'All slots are occupied.';
@@ -299,6 +555,7 @@ io.on('connection', socket => {
     const response = await {
         message: message,
         showb: false,
+        id: raceCr
       };
     await socket.emit('recive-response', response);
     console.log(message);
@@ -324,8 +581,172 @@ io.on('connection', socket => {
       authorized = true;
       socket.emit('recive-race', {race, status, authorized})
     }
+  });
+
+  // Stable
+
+  async function getInfo(address, up) {
+    var data = {
+      curLevel: 0,
+      staminaMax: stables[0].staminaMax,
+      nextLevel: 1,
+      nextLevelPrice: stables[0].price,
+      nextLevelStaminaMax: stables[0].staminaMax,
+      nextLevelPriceHash: stables[0].hash,
+      message: `Unlock level #1 for ${stables[0].price / 100} eStar`
+    };
+    const stable = await Stable.findOne({address: address});
+
+    if(stable != null) {
+        for (var i = 0; i < stables.length; i++) {
+          if(stables[i].level == stable.level && stable.level < 5) {
+            data.curLevel = stable.level;
+            data.staminaMax = stables[i].staminaMax;
+            data.nextLevelStaminaMax = stables[i+1].staminaMax;
+            data.nextLevel = stables[i+1].level;
+            data.nextLevelPrice = stables[i+1].price;
+            data.nextLevelPriceHash = stables[i+1].hash;
+            data.message = `Upgrade to level #${stables[i+1].level} for ${stables[i+1].price / 100} eStar`;
+          }
+        }
+        if(stable.level == 5) {
+          data.curLevel = stable.level;
+          data.staminaMax = 250;
+          data.nextLevelStaminaMax = 0;
+          data.nextLevel = 5;
+          data.nextLevelPrice = 0;
+          data.nextLevelPriceHash = 0;
+          data.message = `Max level`;
+        }
+      } else if(up) {
+        data.curLevel = 1;
+        data.staminaMax = 110;
+        data.nextLevelStaminaMax = stables[1].staminaMax;
+        data.nextLevel = 2;
+        data.nextLevelPrice = stables[1].price;
+        data.nextLevelPriceHash = stables[1].hash;
+        data.message = `Upgrade to level #${stables[1].level} for ${stables[1].price / 100} eStar`;
+      }
+
+    return data;
+  }
+
+  socket.on('get-stable', async address => {
+    const data = await getInfo(address);
+    socket.emit('recive-stable', data);
   })
 
+  socket.on('upgrade-stable', async address => {
+    const stable = await Stable.findOne({address: address});
+    if(stable == null) {
+      const createStable = new Stable({
+        address: address,
+        level: 1,
+        history: {
+          level: 1,
+          date: moment().format("DD/MM/YYYY HH:mm")
+        },
+        date: moment().format("DD/MM/YYYY HH:mm")
+      });
+      createStable.save();
+    } else if(stable.level < 5) {
+      const stableHistory = stable.history;
+      stableHistory.push({
+        level: stable.level + 1,
+        date: moment().format("DD/MM/YYYY HH:mm")
+      });
+      await Stable.findOneAndUpdate({address: address}, {
+        level: stable.level + 1,
+        history: stableHistory,
+      })
+    }
+    const data = await getInfo(address, true);
+    socket.emit('up-recive-stable', data);
+  });
+
+  // Tournament
+
+  async function getTournament() {
+    const tournament = await Tournament.findOne({isActive: true});
+
+    return tournament;
+  }
+
+  async function checkHorseInTournament(id, horse) {
+    const tournament = await Tournament.findOne({_id: id});
+    var authorized = true;
+    if(tournament != null) {
+      for (let i = 0; i < tournament.players.length; i++) {
+        if(tournament.players[i].horse == horse) authorized = false;
+      }
+    }
+    return true;
+  }
+
+  async function updatePlayersInTournament(id, horse, address, numberOfPlayers, maxPlayers) {
+    const player = {
+      address: address,
+      horse: horse,
+      date: moment().format("DD/MM/YYYY HH:mm")
+    };
+    if(numberOfPlayers < maxPlayers) {
+      await Tournament.findOneAndUpdate({_id: id}, {
+        $push: {players: player}
+      });
+      return true;
+    } else return false;
+  }
+
+  socket.on('get-tournament', async () => {
+    const tournament = await getTournament();
+    socket.emit('recive-tournament', tournament);
+  });
+
+  socket.on('get-tournament-slots', async () => {
+    const tournament = await getTournament();
+    if(tournament != null) {
+      const slots = tournament.maxPlayers - tournament.players.length;
+      socket.emit('recive-tournament-slots', slots);
+    }
+  });
+
+  socket.on('enter-tournament', async (address, horse) => {
+    var message = '';
+    const tournament = await getTournament();
+    const authorized = await checkHorseInTournament(tournament._id, horse);
+    if(tournament != null) {
+      if(authorized) {
+        const ok = await updatePlayersInTournament(
+          tournament._id, horse, address,
+          tournament.players.length,
+          tournament.maxPlayers
+        );
+        if(ok) message = 'Success';
+        else message = 'Tournament full!';
+      } else {
+        message = 'This horse is already in the tournament!';
+      }
+      socket.emit('recive-tournament-response', message);
+    }
+  });
+
+  // Rewards
+  
+  socket.on('get-rewards', async address => {
+    const reward = await Reward.findOne({address: address});
+    if(reward != null) {
+      if(reward.estar != undefined && reward.egld != undefined) {
+        socket.emit('recive-rewards', reward.estar.toFixed(1), reward.egld.toFixed(3));
+      } else if(reward.estar != undefined && reward.egld == undefined) {
+        socket.emit('recive-rewards', reward.estar.toFixed(1), 0);
+      } else if(reward.egld != undefined && reward.estar == undefined) {
+        socket.emit('recive-rewards', 0, reward.egld.toFixed(3));
+      }
+    } else {
+      socket.emit('recive-rewards', 0, 0);
+    }
+  })
+
+  // Pana aici e versiunea Alpha 0.0.9 :))
+
 });
-
-

@@ -9,9 +9,12 @@
   "author": "Edi Marian",
   "license": "ISC",
   "dependencies": {
+    "@babel/runtime": "^7.17.9",
+    "@elrondnetwork/elrond-core-js": "^2.1.0",
     "agenda": "^4.2.1",
     "axios": "^0.26.1",
     "dotenv": "^16.0.0",
+    "fs": "0.0.1-security",
     "moment": "^2.29.3",
     "mongoose": "^6.2.6",
     "nodemon": "^2.0.15",

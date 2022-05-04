@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { transactionServices, refreshAccount } from '@elrondnetwork/dapp-core';
-import styles from './styles.module.scss';
-import TxTracking from '../Layout/TxTracking';
+import { reciveAddress } from '../../config';
 import { useGetAccountInfo } from '@elrondnetwork/dapp-core';
 import { Modal } from 'react-bootstrap';
 import { io } from 'socket.io-client';
 
-const Button = (props) => {
+const Button = ({ race }) => {
   const navigate = useNavigate();
   const { address } = useGetAccountInfo();
-  const { successfulTransactionsArray } = TxTracking();
-  const [, setTransactionSessionId] = useState('');
-  const [session, setSession] = useState('');
+  const [transactionSessionId, setTransactionSessionId] = useState('');
   const [paid, setPaid] = useState(false);
   const { sendTransactions } = transactionServices;
   const [estar, setEstar] = useState(0);
@@ -24,22 +21,23 @@ const Button = (props) => {
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState('');
   const [raceIsAv, setRaceIsAv] = useState(false);
+  const [clickable, setClickable] = useState(true);
+  const [raceId, setRaceId] = useState('');
+  const txSuccess = transactionServices.useGetSuccessfulTransactions();
 
   useEffect(() => {
     // Connect socket.io
-    const s = io('http://176.223.121.41/server');
-    s.emit('get-nfts', address);
+    const s = io('http://localhost:4000');
+    s.emit('get-status', address);
     function handler (data) {
       setNft(data);
     }
-    s.on('recive-nfts', handler);
+    s.on('recive-status', handler);
     setSocket(s);
 
     // Fee
-    if (props.fee > 0) {
-      setEstar(props.fee * 100);
-      setEgld(props.fee / 200);
-    }
+    setEstar(race.entryFee);
+    setEgld(race.entryFee);
     // Disconnect socket.io
     return () => {
       s.disconnect();
@@ -56,21 +54,21 @@ const Button = (props) => {
       }
     };
     const av = await {
-      id: props.id,
+      id: race.id,
       address: address,
     };
     await socket.emit('get-available', av);
     await socket.on('recive-available', handler);
     setShow(true);
   };
-
+  
   useEffect(() => {
-    for (let i = 0; i < successfulTransactionsArray.length; i++) {
-      if (successfulTransactionsArray[i][0] == session) {
+    for(let i = 0; i < txSuccess.successfulTransactionsArray.length; i++) {
+      if(txSuccess.successfulTransactionsArray[i][0] == transactionSessionId) {
         setPaid(true);
       }
     }
-  }, [successfulTransactionsArray]);
+  }, [txSuccess.successfulTransactionsArray.length])
 
   useEffect(() => {
     if(paid) setShowSelect(true);
@@ -88,7 +86,7 @@ const Button = (props) => {
         estar >= 50 && estar <= 656
           ? btoa('ESDTTransfer@45535441522d616661616630@' + encrypt())
           : btoa('ESDTTransfer@45535441522d616661616630@0' + encrypt()),
-      receiver: 'erd1q07w9xm8avd7kwj3cgn3xrnhzg5da7e3vg7dv6gs3npyql0jpq9ss35a20'
+      receiver: reciveAddress
     };
     await refreshAccount();
 
@@ -103,7 +101,6 @@ const Button = (props) => {
     });
     if (sessionId != null) {
       setTransactionSessionId(sessionId);
-      setSession(sessionId);
     }
   };
 
@@ -112,7 +109,7 @@ const Button = (props) => {
       value: egld ? egld * 1000000000000000000 : 0,
       gasLimit: '70000',
       data: 'QG9r',
-      receiver: 'erd1q07w9xm8avd7kwj3cgn3xrnhzg5da7e3vg7dv6gs3npyql0jpq9ss35a20'
+      receiver: reciveAddress
     };
     await refreshAccount();
 
@@ -127,36 +124,45 @@ const Button = (props) => {
     });
     if (sessionId != null) {
       setTransactionSessionId(sessionId);
-      setSession(sessionId);
     }
   };
 
+  function setDelay(ms) {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, ms);
+  })
+}
+
   const enter = async (horse, url) => {
+    await setDelay(2000);
     const data = await {
         address: address,
         horse: horse,
         horseUrl: url,
         feePaid: true,
-        raceId: props.id,
+        entryFee: race.withEstar ? estar : egld,
+        with: race.withEstar ? 'ESTAR' : 'EGLD',
+        raceId: race.id,
       };
     socket.emit('enter-race', data);
-    const test = (response) => {
+    const handle = (response) => {
         setSuccess(true);
         setShowSelect(response.showb);
         setMessage(response.message);
+        setRaceId(response.id);
       }
 
-      socket.on('recive-response', test);
+      socket.on('recive-response', handle);
   };
 
   return (
     <div className='container'>
       <button
-        className={props.className ? props.className + ' ' + styles.btn : styles.btn}
-        style={{ backgroundColor: props.color }}
+        className='d-block mx-auto btn text-white'
+        style={{ backgroundColor: race.color }}
         onClick={available}
       >
-        {props.name}
+        Enter
       </button>
       {/* Enter race modal */}
       <Modal
@@ -168,7 +174,7 @@ const Button = (props) => {
       >
         <Modal.Header closeButton className='bg-white'>
           {raceIsAv ? (
-            <Modal.Title>Pay with</Modal.Title>
+            <Modal.Title>Pay</Modal.Title>
           ) : (
             <Modal.Title>Slots</Modal.Title>
           )}
@@ -177,37 +183,38 @@ const Button = (props) => {
         <Modal.Body className='bg-white w-100'>
           {raceIsAv ? (
             <>
-              {props.id != 1 ? (
-                <div className='d-flex'>
-              <button
-                className='d-block mx-auto btn btn-primary'
-                onClick={() => {
-                  setShow(false);
-                  sendEstarTransaction();
-                }}
-              >
-                {estar} eStar
-              </button>
-              <button
-                className='d-block mx-auto btn btn-primary ml-2'
-                onClick={() => {
-                  sendEgldTransaction();
-                  setShow(false);
-                }}
-              >
-                {egld} eGld
-              </button>
-            </div>
+              {race.entryFee != 0 ? (
+                race.withEstar ? (
+                <button
+                  className='d-block mx-auto btn btn-primary'
+                  onClick={() => {
+                    setShow(false);
+                    sendEstarTransaction();
+                  }}
+                >
+                  {estar} eStar
+               </button>
               ) : (
-              <button
-                className='d-block mx-auto btn btn-primary ml-2'
-                onClick={() => {
-                  sendEgldTransaction();
-                  setShow(false);
-                }}
-              >
-                Pay a fee
-              </button>
+                <button
+                  className='d-block mx-auto btn btn-primary'
+                  onClick={() => {
+                    setShow(false);
+                    sendEgldTransaction();
+                  }}
+                >
+                  {egld} EGLD
+                </button>
+              )
+              ) : (
+                <button
+                  className='d-block mx-auto btn btn-primary'
+                  onClick={() => {
+                    setShow(false);
+                    sendEgldTransaction();
+                  }}
+                >
+                  Pay
+                </button>
               )}
             </>
           ) : (
@@ -217,7 +224,7 @@ const Button = (props) => {
       </Modal>
       <Modal
         show={showSelect}
-        size='xl'
+        size={clickable ? 'xl' : 'sm'}
         backdrop='static'
         keyboard={false}
         onHide={() => setShowSelect(false)}
@@ -232,24 +239,49 @@ const Button = (props) => {
         <Modal.Body className='bg-white px-0'>
             <div className='row'>
               {nft ? (
-                nft.map(({ fileUri, name, stamina }) => {
-                  if(stamina >= 25) {
-                    return (
-                      <div
-                        key={name}
-                        className='col-12 col-md-4 text-center'
-                        onClick={() => enter(name, fileUri)}
-                      >
-                        <img src={fileUri} className='d-block mx-auto' height='250px' />
-                        <p style={{ color: 'black' }}>{name}</p>
-                        {props.id > 1 ? '' : stamina == 25 && <p className='text-danger'>Stamina: {stamina}</p> ||
-                          stamina == 50 && <p className='text-warning'>Stamina: {stamina}</p> ||
-                          stamina > 50 && <p className='text-primary'>Stamina: {stamina}</p>
+                clickable ? (
+                    nft.map(({ fileUri, name, stamina, inRace }) => {
+                      if(race.id != 1) {
+                        if(!inRace) {
+                          return (
+                          <div
+                            key={name}
+                            className='col-12 col-md-4 text-center'
+                            onClick={() => {
+                              setClickable(false);
+                             enter(name, fileUri);
+                            }}
+                          >
+                            <img src={fileUri} className='d-block mx-auto' height='250px' />
+                            <p style={{ color: 'black' }}>{name}</p>
+                          </div>
+                        );
                         }
-                      </div>
-                    );
-                  }
-                })
+                      } else {
+                        return (
+                          <div
+                            key={name}
+                            className='col-12 col-md-4 text-center'
+                            onClick={() => {
+                              setClickable(false);
+                             enter(name, fileUri);
+                            }}
+                          >
+                            <img src={fileUri} className='d-block mx-auto' height='250px' />
+                            <p style={{ color: 'black' }}>{name}</p>
+                            {race.id > 1 ? '' : stamina == 25 && <p className='text-danger'>Stamina: {stamina}</p> ||
+                              stamina == 50 && <p className='text-warning'>Stamina: {stamina}</p> ||
+                              stamina > 50 && <p className='text-primary'>Stamina: {stamina}</p>
+                            }
+                          </div>
+                        );
+                      }
+                    })
+                 ) : (
+                    <div className='col-12 col-md-4'>
+                      <h1 className='py-2 px-5'>Loading...</h1>
+                    </div>
+                 )
               ) : (
                 <p>You don&apos;t have EquiStar Nfts.</p>
               )}
@@ -276,7 +308,7 @@ const Button = (props) => {
         <Modal.Footer className='bg-white'>
             <button
               className='btn btn-primary d-block mx-auto'
-              onClick={() => navigate('/')}
+              onClick={() => navigate(`/race/${raceId}`)}
             >
               Close
             </button>
