@@ -19,7 +19,7 @@ mongoose.connect(process.env.DB_CONNECTION);
 
 const io = require('socket.io')(process.env.PORT, {
   cors: {
-    origin: ['https://localhost:3000', 'http://localhost:3000'],
+    origin: ['https://equistar.estar.games', 'http://equistar.estar.games'],
     method: ['GET', 'POST', 'PATCH']
   }
 });
