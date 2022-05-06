@@ -2,9 +2,9 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGetAccountInfo } from '@elrondnetwork/dapp-core';
-import styles from './styles.module.scss';
 import races from '../../components/Races';
 import Button from '../../components/Button';
+import { tokenName } from 'config';
 
 const Race = () => {
   const { address } = useGetAccountInfo();
@@ -30,7 +30,7 @@ const Race = () => {
                     Ranking prize:
                     {race.ranking.map((rank) => (
                       <p key={rank.name}>
-                        {rank.name} {rank.win} ESTAR
+                        {rank.name} {rank.win} {race.id == 1 ? tokenName : race.withEstar ? tokenName : 'EGLD'}
                       </p>
                     ))}
                   </span>

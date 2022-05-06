@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { transactionServices, refreshAccount } from '@elrondnetwork/dapp-core';
-import { reciveAddress } from '../../config';
+import { backend, reciveAddress, tokenName } from '../../config';
 import { useGetAccountInfo } from '@elrondnetwork/dapp-core';
 import { Modal } from 'react-bootstrap';
 import { io } from 'socket.io-client';
@@ -27,7 +27,7 @@ const Button = ({ race }) => {
 
   useEffect(() => {
     // Connect socket.io
-    const s = io('http://localhost:4000');
+    const s = io(backend);
     s.emit('get-status', address);
     function handler (data) {
       setNft(data);
@@ -192,7 +192,7 @@ const Button = ({ race }) => {
                     sendEstarTransaction();
                   }}
                 >
-                  {estar} eStar
+                  {estar} {tokenName}
                </button>
               ) : (
                 <button

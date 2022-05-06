@@ -10,15 +10,15 @@ const races = [
     ranking: [
       {
         name: 'First',
-        win: 7
+        win: 6.9
       },
       {
         name: 'Second',
-        win: 5
+        win: 5.025
       },
       {
         name: 'Third',
-        win: 3
+        win: 3.075
       }
     ],
     color: '#15a13a'
@@ -34,15 +34,15 @@ const races = [
     ranking: [
       {
         name: 'First',
-        win: 360
+        win: 349.6
       },
       {
         name: 'Second',
-        win: 260
+        win: 254.6
       },
       {
         name: 'Third',
-        win: 140
+        win: 155.8
       }
     ],
     color: '#bf9713'
@@ -58,15 +58,15 @@ const races = [
     ranking: [
       {
         name: 'First',
-        win: 15
+        win: 0.1748
       },
       {
         name: 'Second',
-        win: 10
+        win: 0.1273
       },
       {
         name: 'Third',
-        win: 7
+        win: 0.0779
       }
     ],
     color: '#bf8013'

@@ -9,7 +9,7 @@ import { io } from 'socket.io-client';
 import { useLocation } from 'react-router-dom';
 
 import styles from './styles.module.scss';
-import { backend } from 'config';
+import { backend, tokenName } from 'config';
 
 const Cards = () => {
   const location = useLocation();
@@ -47,7 +47,7 @@ const Cards = () => {
       icon: <FontAwesomeIcon icon={faAnchor} />
     },
     {
-      label: 'eStar',
+      label: tokenName,
       colors: ['#33cc33', '#2eb82e'],
       icon: <Logo width={25} height={25} />,
       data: {

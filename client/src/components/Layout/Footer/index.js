@@ -45,7 +45,7 @@ const Footer = () => {
               target='_blank'
               rel='noopener noreferrer'
             >
-              Mint
+              <button className='btn btn-primary'>Mint</button>
             </a>
           </li>
           <li className='mr-3'>

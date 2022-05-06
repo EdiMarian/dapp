@@ -3,6 +3,9 @@ const dotenv = require('dotenv');
 const axios = require('axios');
 const Agenda = require('agenda');
 const moment = require('moment');
+const express = require('express');
+const fs = require('fs');
+const https = require('https');
 
 const Race = require('./models/Race');
 const Horse = require('./models/Horse');
@@ -11,18 +14,26 @@ const Stable = require('./models/Stable');
 const Tournament = require('./models/Tournament');
 const Reward = require('./models/Reward');
 
+const app = express();
+const https_server = https.createServer({
+  key: fs.readFileSync('key.key'),
+  cert: fs.readFileSync('cert.crt')
+}, app).listen(process.env.PORT);
+
 dotenv.config();
 
 mongoose.connect(process.env.DB_CONNECTION);
 
 // FrontEnd-to-Backend comunication
 
-const io = require('socket.io')(process.env.PORT, {
+const io = require('socket.io')({
   cors: {
-    origin: ['https://equistar.estar.games', 'http://equistar.estar.games'],
+    origin: 'https://equistar.estar.games',
     method: ['GET', 'POST', 'PATCH']
   }
 });
+
+io.listen(https_server);
 
 // VAR
 
@@ -145,8 +156,8 @@ function setDelay(ms) {
 }
 
 function makeid(length) {
-    var result           = '';
-    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
     for ( var i = 0; i < length; i++ ) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -337,10 +348,12 @@ async function getWinners(data) {
 }
 
 function calculateReward(fee, percent) {
-  return ((((fee * 8) * 95) / 100) * percent) / 100;
+  if(fee == 0) return (15 * percent) / 100;
+    else return ((((fee * 8) * 95) / 100) * percent) / 100;
 }
 
 async function updatePlayersReward(winners, positions, exist, payWith) {
+  console.log(positions);
   if(exist) {
     const reward = await Reward.findOne({address: winners.address});
     if(payWith == 'ESTAR') {
@@ -475,7 +488,11 @@ async function startGame(id) {
   const result = await calculateScore(data);
   const winners = await getWinners(result, data);
   await setDelay(120000);
-  await sendToWinnerReward(winners, data.entryFee, data.with);
+  var rewardIn = '';
+  if(id == 1) rewardIn = 'ESTAR';
+    else rewardIn = data.with;
+
+  await sendToWinnerReward(winners, data.entryFee, rewardIn);
   const raceHS = new RaceHistory({
     _id: data._id,
     raceId: id,
@@ -583,6 +600,22 @@ io.on('connection', socket => {
     }
   });
 
+  // Race History
+
+  async function getRaceHistory(address) {
+    var races = [];
+    const history = await RaceHistory.find({"player.address": address});
+    for(let i = 0; i < history.length; i++) {
+      races.push({id: history[i]._id});
+    }
+    return races;
+  }
+
+  socket.on('get-history', async address => {
+    const races = await getRaceHistory(address)
+    socket.emit('recive-history', races);
+  });
+
   // Stable
 
   async function getInfo(address, up) {
@@ -680,7 +713,7 @@ io.on('connection', socket => {
         if(tournament.players[i].horse == horse) authorized = false;
       }
     }
-    return true;
+    return authorized;
   }
 
   async function updatePlayersInTournament(id, horse, address, numberOfPlayers, maxPlayers) {
@@ -747,6 +780,6 @@ io.on('connection', socket => {
     }
   })
 
-  // Pana aici e versiunea Alpha 0.0.9 :))
+  // Pana aici e versiunea Alpha 0.1.2 :))
 
 });

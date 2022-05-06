@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { backend } from 'config';
+import { backend, tokenName } from 'config';
 import { io } from 'socket.io-client'
 
 const Rewards = ({ address }) => {
@@ -44,7 +44,7 @@ const Rewards = ({ address }) => {
           <h1>Rewards</h1>
         </div>
         <div className="card-body text-center">
-          <h4>{estar} eStar</h4>
+          <h4>{estar} {tokenName}</h4>
           <h4>{egld} EGLD</h4>
         </div>
         <div className="card-footer">
