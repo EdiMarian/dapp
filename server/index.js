@@ -574,21 +574,24 @@ io.on('connection', socket => {
     var message = 'OK';
 
     const exist = await checkIfRaceExist(race.id);
-    if(exist) {
-      const raceDB = await Race.findOne({id: race.id});
-      if(raceDB.player.length < 8) {
-        const { numberOfIssues } = await checkWalletInRace(race.id, address);
-        const nftsAvailable = await getNftsAvailable(address, race.id);
-        if(race.maxEntryPerWallet <= numberOfIssues) {
-          message = 'You have reached the maximum number of entries in this race!';
-        } else if(Boolean(nftsAvailable) != true) {
-          message = 'You no longer have horses available.';
+    const nftsAvailable = await getNftsAvailable(address, race.id);
+    if(Boolean(nftsAvailable) == true) {
+      if(exist) {
+        const raceDB = await Race.findOne({id: race.id});
+        if(raceDB.player.length < 8) {
+          const { numberOfIssues } = await checkWalletInRace(race.id, address);
+          if(race.maxEntryPerWallet <= numberOfIssues) {
+            message = 'You have reached the maximum number of entries in this race!';
+          }
+        } else {
+          message = 'No more slots available.';
         }
-      } else {
-        message = 'No more slots available.';
       }
+    } else {
+      message = 'You no longer have horses available.';
     }
     socket.emit('recive-available', message);
+    console.log(message);
   });
   socket.on('enter-race', async data => {
     var message = '';

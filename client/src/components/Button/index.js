@@ -182,7 +182,8 @@ const Button = ({ race }) => {
               <Modal.Title>Pay</Modal.Title>
             </Modal.Header>
             <Modal.Body className='bg-white w-100'>
-              <button
+              {race.withEstar ? (
+                <button
                 className='d-block mx-auto btn btn-primary'
                 onClick={() => {
                   setShow(false);
@@ -191,6 +192,17 @@ const Button = ({ race }) => {
               >
                 {estar} {tokenName}
               </button>
+              ) : (
+                <button
+                className='d-block mx-auto btn btn-primary'
+                onClick={() => {
+                  setShow(false);
+                  sendEgldTransaction();
+                }}
+              >
+                {egld} EGLD
+              </button>
+              )}
             </Modal.Body>
           </>
         ) : (
