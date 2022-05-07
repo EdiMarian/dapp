@@ -1,3 +1,5 @@
+const local = true;
+
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const axios = require('axios');
@@ -14,26 +16,35 @@ const Stable = require('./models/Stable');
 const Tournament = require('./models/Tournament');
 const Reward = require('./models/Reward');
 
-const app = express();
-const https_server = https.createServer({
-  key: fs.readFileSync('key.key'),
-  cert: fs.readFileSync('cert.crt')
-}, app).listen(process.env.PORT);
-
 dotenv.config();
 
 mongoose.connect(process.env.DB_CONNECTION);
 
-// FrontEnd-to-Backend comunication
+var io;
 
-const io = require('socket.io')({
-  cors: {
-    origin: 'https://equistar.estar.games',
-    method: ['GET', 'POST', 'PATCH']
-  }
-});
+if(local) {
+  io = require('socket.io')(process.env.PORT,{
+    cors: {
+      origin: '*',
+      method: ['GET', 'POST', 'PATCH']
+    }
+  });
+} else {
+  const app = express();
+  const https_server = https.createServer({
+    key: fs.readFileSync('key.key'),
+    cert: fs.readFileSync('cert.crt')
+  }, app).listen(process.env.PORT);
 
-io.listen(https_server);
+  io = require('socket.io')({
+    cors: {
+      origin: 'https://equistar.estar.games',
+      method: ['GET', 'POST', 'PATCH']
+    }
+  });
+
+  io.listen(https_server);
+}
 
 // VAR
 
@@ -203,21 +214,41 @@ async function getNfts(address) {
   return nfts;
 }
 
-async function checkExist(id) {
-  const data = await Race.find({id: id});
-  if(data.length > 0) return true;
+async function getNftsAvailable(address, id) {
+  const nfts = await getNfts(address);
+  var available = false;
+  for(let i = 0; i < nfts.length; i++) {
+    const horse = await Horse.findOne({name: nfts[i].name});
+    if(!Boolean(horse.inRace) && horse.stamina >= 25) {
+      available = true;
+    }
+  }
+
+  return available;
+}
+
+async function checkIfRaceExist(id) {
+  const data = await Race.findOne({id: id});
+  if(data != null) return true;
   return false;
 };
 
 async function checkWalletInRace(id, address) {
   const race = await Race.findOne({id: id});
-  var check = true;
+  var authorized = true;
+  var k = 0;
   if(race != null) {
    for (let i = 0; i < race.player.length; i++) {
-      if(race.player[i].address == address) check = false;
+      if(race.player[i].address == address) {
+        authorized = false;
+        k++;
+      };
    }
   }
-  return check;
+  return {
+    authorized: authorized,
+    numberOfIssues: k
+  };
 }
 
 async function createRace(data) {
@@ -528,31 +559,41 @@ io.on('connection', socket => {
     const nfts = await getNfts(address);
     socket.emit('recive-status', nfts, mints.data, balance);
   });
-  socket.on('get-available', async av => {
-    const authorized = await checkWalletInRace(av.id, av.address)
-    var isAvailable = false;
-    if(authorized) {
-      const data = await Race.find({id: av.id});
-      if(data.length != 0) {
-        if(data[0].player.length > 0 && data[0].player.length < 8) {
-          isAvailable = true;
-        } else {
-          isAvailable = false;
-        }
-      } else if(data.length == 0) {
-        isAvailable = true;
-      }
-    };
-    const avOB = await {
-      isAvailable: isAvailable,
-      authorized: authorized
+
+  socket.on('get-players', async id => {
+    const race = await Race.findOne({id: id});
+    var players = 0;
+    if(race != null) {
+      players = race.player.length;
     }
-    socket.emit('recive-available', avOB);
+    socket.emit('recive-players', players)
+  })
+
+  socket.on('get-available', async (race, address) => {
+
+    var message = 'OK';
+
+    const exist = await checkIfRaceExist(race.id);
+    if(exist) {
+      const raceDB = await Race.findOne({id: race.id});
+      if(raceDB.player.length < 8) {
+        const { numberOfIssues } = await checkWalletInRace(race.id, address);
+        const nftsAvailable = await getNftsAvailable(address, race.id);
+        if(race.maxEntryPerWallet <= numberOfIssues) {
+          message = 'You have reached the maximum number of entries in this race!';
+        } else if(Boolean(nftsAvailable) != true) {
+          message = 'You no longer have horses available.';
+        }
+      } else {
+        message = 'No more slots available.';
+      }
+    }
+    socket.emit('recive-available', message);
   });
   socket.on('enter-race', async data => {
     var message = '';
     var raceCr = '';
-    const exist = await checkExist(data.raceId);
+    const exist = await checkIfRaceExist(data.raceId);
     if(!exist) {
       raceCr = await createRace(data);
       message = `You entered the race with ${data.horse}`;
@@ -604,9 +645,9 @@ io.on('connection', socket => {
 
   async function getRaceHistory(address) {
     var races = [];
-    const history = await RaceHistory.find({"player.address": address});
+    const history = await RaceHistory.find({"player.address": address}).sort({date: -1});
     for(let i = 0; i < history.length; i++) {
-      races.push({id: history[i]._id});
+      races.push({id: history[i]._id, date: history[i].date});
     }
     return races;
   }

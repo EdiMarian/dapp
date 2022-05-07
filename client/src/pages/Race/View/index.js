@@ -14,6 +14,7 @@ const RaceView = () => {
   const [exist, setExist] = useState(false);
   const [authorized, setAuthorized] = useState(false);
   const [race, setRace] = useState([]);
+  const [players, setPlayers] = useState([]);
   const navigate = useNavigate();
   const handleRedirect = () =>
     Boolean(address) ? setLoading(false) : navigate('/unlock');
@@ -29,6 +30,13 @@ const RaceView = () => {
         setAuthorized(authorized);
       }
     }
+    s.emit('get-players', path);
+
+    const handle = (players) => {
+      setPlayers(players);
+    }
+
+    s.on('recive-players', handle);
     s.on('recive-race', handler);
     return () => {
       s.disconnect();
@@ -51,6 +59,11 @@ const RaceView = () => {
                               <h1>Race #{race.id}</h1>
                             </div>
                           </div>
+                          <div className="row">
+                            <div className="col-12 text-white text-center">
+                              <h4>Players: {players}/8</h4>
+                            </div>
+                          </div>
                           <div className='row'>
                             <div className='col-12 text-white text-center'>
                               <h3>The participants of this race are</h3>
@@ -59,7 +72,7 @@ const RaceView = () => {
                           <div className='row'>
                             {race.player.map((player) => (
                               <div
-                                key={player.address}
+                                key={player.horse}
                                 className='col-12 col-md-4 mb-2'
                               >
                                 <div className='card'>

@@ -7,7 +7,7 @@ import CarouselComponent from 'components/Carousel';
 import Rewards from 'components/Rewards';
 import Cards from '../../components/Cards';
 import Nfts from '../../components/Nfts';
-import RaceHistory from 'components/RaceHistory';
+import RaceHistory from 'pages/RaceHistory';
 
 const Dashboard = () => {
   const { address } = useGetAccountInfo();
@@ -56,12 +56,6 @@ const Dashboard = () => {
         <div className="col-12">
           <h1 className="text-center text-light mb-4">My NFTs</h1>
           <Nfts withDetails={true} />
-        </div>
-      </div>
-      <div className="row mb-4">
-        <div className="col-12 text-light">
-          <h1 className="text-center mb-4">Race History</h1>
-          <RaceHistory address={address} />
         </div>
       </div>
     </div>

@@ -6,6 +6,8 @@ const races = [
     isActive: true,
     withEstar: false,
     withEgld: true,
+    payFee: false,
+    maxEntryPerWallet: 8,
     entryFee: 0,
     ranking: [
       {
@@ -30,6 +32,8 @@ const races = [
     withEstar: true,
     withEgld: false,
     isActive: true,
+    payFee: true,
+    maxEntryPerWallet: 1,
     entryFee: 100,
     ranking: [
       {
@@ -54,6 +58,8 @@ const races = [
     withEstar: false,
     withEgld: true,
     isActive: true,
+    payFee: true,
+    maxEntryPerWallet: 1,
     entryFee: 0.05,
     ranking: [
       {

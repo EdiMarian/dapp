@@ -9,10 +9,10 @@ interface NetworkType {
 }
 
 export const minDust = '5000000000000000';
-export const backend = 'https://equistar.estar.games:4000';
+export const backend = 'http://localhost:4000';
 export const tokenName = 'ESTAR';
 export const reciveAddress = 'erd1q07w9xm8avd7kwj3cgn3xrnhzg5da7e3vg7dv6gs3npyql0jpq9ss35a20';
-export const version = 'V. Alpha0.1.03';
+export const version = 'V. Alpha0.1.04';
 export const dAppName = 'Estar';
 export const decimals = 2;
 export const denomination = 18;

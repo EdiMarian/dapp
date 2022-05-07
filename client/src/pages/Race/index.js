@@ -5,6 +5,8 @@ import { useGetAccountInfo } from '@elrondnetwork/dapp-core';
 import races from '../../components/Races';
 import Button from '../../components/Button';
 import { tokenName } from 'config';
+import { io } from 'socket.io-client';
+import Slots from './Components/Slots';
 
 const Race = () => {
   const { address } = useGetAccountInfo();
@@ -25,6 +27,9 @@ const Race = () => {
               </div>
               <div className="card-body">
                 <h5>{race.description}</h5>
+                <div className="text-center">
+                  <Slots race={race} address={address} />
+                </div>
                 <div className='text-center'>
                   <span>
                     Ranking prize:

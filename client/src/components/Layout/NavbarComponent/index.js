@@ -8,8 +8,8 @@ import {
   faWallet,
   faPowerOff,
   faHorse,
-  faStar,
-  faCrown,
+  faBook,
+  faUser,
   faList
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -44,19 +44,19 @@ const NavbarComponent = () => {
       onClick: () => routeChange('/race')
     },
     {
-      icon: <FontAwesomeIcon icon={faStar} />,
-      label: 'Stable',
-      onClick: () => routeChange('/stable')
-    },
-    {
-      icon: <FontAwesomeIcon icon={faCrown} />,
-      label: 'Tournament',
-      onClick: () => routeChange('/tournament')
+      icon: <FontAwesomeIcon icon={faBook} />,
+      label: 'History',
+      onClick: () => routeChange('/raceHistory')
     },
     {
       icon: <FontAwesomeIcon icon={faList} />,
-      label: 'Leaderboard',
-      onClick: () => routeChange('/leaderboard')
+      label: 'Category',
+      onClick: () => routeChange('/category')
+    },
+    {
+      icon: <FontAwesomeIcon icon={faUser} />,
+      label: 'Account',
+      onClick: () => routeChange('/account')
     },
     {
       icon: <FontAwesomeIcon icon={faPowerOff} />,

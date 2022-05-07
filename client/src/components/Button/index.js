@@ -44,22 +44,26 @@ const Button = ({ race }) => {
     };
   }, []);
 
-  async function available () {
-    const handler = (avOB) => {
-      if(avOB.authorized) {
-        setRaceIsAv(avOB.isAvailable);
-        setMessage('There are no more places available in this race!')
+  async function available (race) {
+    const handler = (message) => {
+      if(race.payFee) {
+        if(message == 'OK') {
+          setRaceIsAv(true);
+        } else {
+          setMessage(message);
+        }
+        setShow(true);
       } else {
-        setMessage('You can only enter this race once!');
+        if(message == 'OK') {
+          setShowSelect(true);
+        } else {
+          setMessage(message);
+          setShow(true);
+        }
       }
     };
-    const av = await {
-      id: race.id,
-      address: address,
-    };
-    await socket.emit('get-available', av);
+    await socket.emit('get-available', race, address);
     await socket.on('recive-available', handler);
-    setShow(true);
   };
   
   useEffect(() => {
@@ -128,10 +132,10 @@ const Button = ({ race }) => {
   };
 
   function setDelay(ms) {
-  return new Promise((resolve, reject) => {
-    setTimeout(resolve, ms);
-  })
-}
+    return new Promise((resolve, reject) => {
+      setTimeout(resolve, ms);
+    })
+  }
 
   const enter = async (horse, url) => {
     await setDelay(2000);
@@ -160,7 +164,7 @@ const Button = ({ race }) => {
       <button
         className='d-block mx-auto btn text-white'
         style={{ backgroundColor: race.color }}
-        onClick={available}
+        onClick={() => available(race)}
       >
         Enter
       </button>
@@ -172,55 +176,33 @@ const Button = ({ race }) => {
         aria-labelledby='contained-modal-title-vcenter'
         centered
       >
-        <Modal.Header closeButton className='bg-white'>
-          {raceIsAv ? (
-            <Modal.Title>Pay</Modal.Title>
-          ) : (
-            <Modal.Title>Slots</Modal.Title>
-          )}
-        </Modal.Header>
-
-        <Modal.Body className='bg-white w-100'>
-          {raceIsAv ? (
-            <>
-              {race.entryFee != 0 ? (
-                race.withEstar ? (
-                <button
-                  className='d-block mx-auto btn btn-primary'
-                  onClick={() => {
-                    setShow(false);
-                    sendEstarTransaction();
-                  }}
-                >
-                  {estar} {tokenName}
-               </button>
-              ) : (
-                <button
-                  className='d-block mx-auto btn btn-primary'
-                  onClick={() => {
-                    setShow(false);
-                    sendEgldTransaction();
-                  }}
-                >
-                  {egld} EGLD
-                </button>
-              )
-              ) : (
-                <button
-                  className='d-block mx-auto btn btn-primary'
-                  onClick={() => {
-                    setShow(false);
-                    sendEgldTransaction();
-                  }}
-                >
-                  Pay
-                </button>
-              )}
-            </>
-          ) : (
-            <h5>{message}</h5>
-          )}
-        </Modal.Body>
+        {raceIsAv ? (
+          <>
+            <Modal.Header closeButton className='bg-white'>
+              <Modal.Title>Pay</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className='bg-white w-100'>
+              <button
+                className='d-block mx-auto btn btn-primary'
+                onClick={() => {
+                  setShow(false);
+                  sendEstarTransaction();
+                }}
+              >
+                {estar} {tokenName}
+              </button>
+            </Modal.Body>
+          </>
+        ) : (
+          <>
+            <Modal.Header closeButton className='bg-white'>
+              <Modal.Title>Error</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className='bg-white w-100'>
+              <h4>{message}</h4>
+            </Modal.Body>
+          </>
+        )}
       </Modal>
       <Modal
         show={showSelect}
@@ -231,7 +213,7 @@ const Button = ({ race }) => {
         aria-labelledby='contained-modal-title-vcenter'
         centered
       >
-        <Modal.Header className='bg-white'>
+        <Modal.Header className='bg-white' closeButton>
           <Modal.Title id='contained-modal-title-vcenter'>
             Select Horse
           </Modal.Title>
@@ -241,7 +223,7 @@ const Button = ({ race }) => {
               {nft ? (
                 clickable ? (
                     nft.map(({ fileUri, name, stamina, inRace }) => {
-                      if(race.id != 1) {
+                      if(Boolean(race.payFee)) {
                         if(!inRace) {
                           return (
                           <div
@@ -258,23 +240,27 @@ const Button = ({ race }) => {
                         );
                         }
                       } else {
-                        return (
-                          <div
-                            key={name}
-                            className='col-12 col-md-4 text-center'
-                            onClick={() => {
-                              setClickable(false);
-                             enter(name, fileUri);
-                            }}
-                          >
-                            <img src={fileUri} className='d-block mx-auto' height='250px' />
-                            <p style={{ color: 'black' }}>{name}</p>
-                            {race.id > 1 ? '' : stamina == 25 && <p className='text-danger'>Stamina: {stamina}</p> ||
-                              stamina == 50 && <p className='text-warning'>Stamina: {stamina}</p> ||
-                              stamina > 50 && <p className='text-primary'>Stamina: {stamina}</p>
-                            }
-                          </div>
-                        );
+                        if(!inRace) {
+                          if(stamina >= 25) {
+                            return (
+                              <div
+                                key={name}
+                                className='col-12 col-md-4 text-center'
+                                onClick={() => {
+                                  setClickable(false);
+                                  enter(name, fileUri);
+                                }}
+                              >
+                                <img src={fileUri} className='d-block mx-auto' height='250px' />
+                                <p style={{ color: 'black' }}>{name}</p>
+                                  {race.id > 1 ? '' : stamina == 25 && <p className='text-danger'>Stamina: {stamina}</p> ||
+                                    stamina == 50 && <p className='text-warning'>Stamina: {stamina}</p> ||
+                                    stamina > 50 && <p className='text-primary'>Stamina: {stamina}</p>
+                                  }
+                              </div>
+                            );
+                          }
+                        }
                       }
                     })
                  ) : (
@@ -308,9 +294,15 @@ const Button = ({ race }) => {
         <Modal.Footer className='bg-white'>
             <button
               className='btn btn-primary d-block mx-auto'
+              onClick={() => navigate(`/`)}
+            >
+              Back to home.
+            </button>
+            <button
+              className='btn btn-primary d-block mx-auto'
               onClick={() => navigate(`/race/${raceId}`)}
             >
-              Close
+              View race.
             </button>
         </Modal.Footer>
       </Modal>
