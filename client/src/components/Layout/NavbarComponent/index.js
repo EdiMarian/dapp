@@ -69,7 +69,7 @@ const NavbarComponent = () => {
           <Link
             key={button.label}
             to={button.link}
-            className='mr-3 text-light text-decoration-none'
+            className={styles.navItem}
             style={{ fontSize: '16.5px', marginRight: '15px' }}
           >
             {button.label}

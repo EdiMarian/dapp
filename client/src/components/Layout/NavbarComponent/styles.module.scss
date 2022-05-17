@@ -8,6 +8,16 @@
   font-style: italic;
 }
 
+.navItem {
+  color: #fff;
+  font-family: "Montserrat", sans-serif;
+  text-decoration: none;
+}
+
+.navItem:hover {
+  color: rgb(206, 206, 206);
+}
+
 @media screen and (max-width: 310px) {
   .title {
     font-size: 20px;

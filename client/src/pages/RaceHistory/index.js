@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom';
 import { useGetAccountInfo } from '@elrondnetwork/dapp-core';
 import { io } from 'socket.io-client';
 import { backend } from 'config';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye } from '@fortawesome/free-solid-svg-icons';
 
 import { Table } from 'react-bootstrap';
+import styles from './styles.module.scss';
 
 const RaceHistory = () => {
   const { address } = useGetAccountInfo();
@@ -47,9 +50,9 @@ const RaceHistory = () => {
   } else {
     return (
       <div className="container">
-        <div className="row my-5">
-          <div className="col-12 text-center text-white">
-            <h1>Race History</h1>
+        <div className="row">
+          <div className="col-12">
+            <h1 className={styles.title}>Races History</h1>
           </div>
         </div>
         <div className="row text-light">
@@ -58,9 +61,9 @@ const RaceHistory = () => {
               <thead>
                 <tr className="text-center">
                   <th>Race id</th>
-                  <th>Entry Date</th>
-                  <th>End Date</th>
-                  <th>Link</th>
+                  <th>Created On</th>
+                  <th>Ended On</th>
+                  <th>View</th>
                 </tr>
               </thead>
               <tbody>
@@ -72,9 +75,9 @@ const RaceHistory = () => {
                     <td className="text-center">
                       <Link
                         to={'/race/' + race.id}
-                        className="text-warning"
+                        className={styles.eye}
                       >
-                        View
+                        <FontAwesomeIcon icon={faEye} />
                       </Link></td>
                   </tr>
                 ))}
