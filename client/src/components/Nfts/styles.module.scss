@@ -1,36 +1,39 @@
-.nftGrid {
-  display: grid;
-  width: 100%;
+.boxNft {
+  background: url("https://i.ibb.co/nbqVdCp/pattern-chenar.png") center / cover
+    no-repeat;
+  background-color: #f5bc00;
+  margin-bottom: 10px;
+  border-radius: 7px;
+  min-height: 353px;
 }
-
-.nftContent {
-  margin: 0 auto;
+.boxNftContent {
+  font-family: "Montserrat", sans-serif;
+  padding: 7px 5px;
   text-align: center;
-  color: #fff;
 }
-
 .img {
+  height: 280px;
+  width: 140px;
+  object-fit: cover;
+  display: block;
   margin: 0 auto;
-  width: 250px;
-  height: 250px;
+  margin-bottom: -30px;
 }
-
-@media (max-width: 600px) {
-  .nftGrid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    width: 100%;
-  }
-
-  .nftContent {
-    margin: 0 auto;
-    text-align: center;
-    color: #fff;
-  }
-
-  .img {
-    margin: 0 auto;
-    width: 250px;
-    height: 250px;
-  }
+.name {
+  font-size: 20px;
+  font-weight: 600 !important;
+}
+.stamina {
+  font-size: 17px;
+  font-weight: 500 !important;
+  margin-top: -5px;
+}
+.btn {
+  background-color: #061527;
+  color: #f5bc00;
+  font-size: 17px;
+  font-weight: 600 !important;
+  border-radius: 7px;
+  border: none;
+  padding: 5px 7px;
 }

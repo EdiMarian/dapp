@@ -1,0 +1,283 @@
+.nftsTitle {
+  text-align: center;
+  color: #f5bc00;
+  font-size: 40px;
+  font-weight: 600 !important;
+  font-style: italic;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  text-transform: uppercase;
+}
+
+.img {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  margin: auto auto;
+}
+.img img {
+  height: 100%;
+  display: block;
+  margin: auto auto;
+}
+.editButton {
+  background: url("https://i.ibb.co/jZL8bQg/pattern.png") center / cover repeat;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  font-weight: 500 !important;
+  padding: 5px 10px;
+  text-transform: uppercase;
+  background-color: #f5bc00;
+  border: none;
+  border-left: 5px solid #4198eb;
+  border-right: 5px solid #4198eb;
+  border-radius: 5px;
+  display: block;
+  margin: 0 auto;
+  margin-top: 24px;
+}
+.helloTitle {
+  font-size: 50px;
+  font-family: "Montserrat", sans-serif;
+  color: #f5bc00;
+  font-style: italic;
+  font-weight: 400 !important;
+  text-align: end;
+  text-transform: uppercase;
+  margin-bottom: 30px;
+}
+.helloUsername {
+  font-weight: 900 !important;
+}
+.statisticsTitle {
+  background: url("https://i.ibb.co/jZL8bQg/pattern.png") center / cover repeat;
+  font-family: "Montserrat", sans-serif;
+  font-size: 25px;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  background-color: #f5bc00;
+  padding: 4px;
+  width: 200px;
+  margin: 20px 0;
+  text-align: center;
+  border-left: 5px solid #4198eb;
+  border-right: 5px solid #4198eb;
+}
+.statisticsData {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px 120px;
+  width: 100%;
+}
+.statisticsDataContent {
+  color: #f5bc00;
+  font-family: "Montserrat", sans-serif;
+}
+.statisticsDataContentEl {
+  text-transform: uppercase;
+  font-size: 24px;
+  font-weight: 600 !important;
+}
+.statisticsDataContentParagraf {
+  color: #ffff;
+  font-size: 17px;
+  font-weight: 500 !important;
+  margin-top: -10px;
+}
+.claimTitle {
+  font-size: 30px;
+  font-weight: 700 !important;
+  color: #061527;
+  background: url("https://i.ibb.co/jZL8bQg/pattern.png") center / cover repeat;
+  background-color: #f5bc00;
+  border-left: 5px solid #4198eb;
+  border-right: 5px solid #4198eb;
+  font-family: "Montserrat", sans-serif;
+  text-transform: uppercase;
+  padding: 10px 7px;
+  width: 305px;
+}
+.claimData {
+  padding: 10px 0px;
+  font-family: "Montserrat", sans-serif;
+}
+.claimDataContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-transform: uppercase;
+}
+.claimDataContentEl {
+  color: #f5bc00;
+  font-size: 30px;
+  font-weight: 500 !important;
+}
+.claimDataContentToken {
+  font-weight: 800;
+}
+.claimDataContentReward {
+  color: #ffff;
+  font-weight: 800 !important;
+}
+.claimBtn {
+  color: #061527;
+  font-size: 20px;
+  font-weight: 700 !important;
+  text-align: center;
+  text-transform: uppercase;
+  border-radius: 7px;
+  padding: 5px 7px;
+  background: url("https://i.ibb.co/jZL8bQg/pattern.png") center / cover repeat;
+  background-color: #f5bc00;
+  opacity: 0.6;
+  border: none;
+  margin-top: 10px;
+  display: block;
+  float: right;
+}
+
+@media screen and (max-width: 500px) {
+  .img {
+    width: 200px;
+    height: 200px;
+  }
+  .helloTitle {
+    font-size: 22px;
+    text-align: center;
+  }
+  .helloUsername {
+    font-weight: 700 !important;
+  }
+  .statisticsTitle {
+    margin: 20px auto;
+    font-size: 20px;
+    width: 170px;
+  }
+  .statisticsData {
+    grid-template-columns: repeat(1, 1fr);
+    grid-gap: 0;
+    text-align: center;
+  }
+  .claimTitle {
+    font-size: 20px;
+    width: 215px;
+    margin: 10px auto;
+  }
+  .claimDataContent {
+    flex-direction: column;
+  }
+  .claimDataContentEl {
+    font-size: 20px;
+  }
+  .claimDataContentReward {
+    font-size: 17px;
+  }
+  .claimBtn {
+    float: unset;
+    margin: 0 auto;
+  }
+}
+@media screen and (min-width: 501px) {
+  .img {
+    width: 300px;
+    height: 300px;
+  }
+  .helloTitle {
+    font-size: 40px;
+    text-align: center;
+  }
+  .helloUsername {
+    font-weight: 700 !important;
+  }
+  .statisticsTitle {
+    margin: 20px auto;
+    font-size: 30px;
+    width: 200px;
+  }
+  .statisticsData {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 0;
+    text-align: center;
+  }
+}
+@media (min-width: 768px) {
+  .img {
+    width: 250px;
+    height: 250px;
+  }
+  .helloTitle {
+    font-size: 40px;
+    text-align: center;
+  }
+  .helloUsername {
+    font-weight: 700 !important;
+  }
+  .statisticsTitle {
+    margin: 20px auto;
+    font-size: 22px;
+    width: 180px;
+  }
+  .statisticsData {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 0;
+  }
+  .statisticsDataContentEl {
+    font-size: 17px;
+  }
+}
+@media screen and (min-width: 1008px) {
+  .nftsTitle {
+    font-size: 40px;
+    font-weight: 600 !important;
+    font-style: italic;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+  }
+
+  .img {
+    width: 300px;
+    height: 300px;
+  }
+  .editButton {
+    font-size: 14px;
+    font-weight: 500 !important;
+    padding: 5px 10px;
+    margin-top: 24px;
+  }
+  .helloTitle {
+    font-size: 50px;
+    font-weight: 400 !important;
+    text-align: end;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+  }
+  .helloUsername {
+    font-weight: 900 !important;
+  }
+  .statisticsTitle {
+    font-size: 25px;
+    font-weight: 600 !important;
+    padding: 4px;
+    width: 200px;
+    margin: 20px 0;
+    text-align: center;
+  }
+  .statisticsData {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px 120px;
+    width: 100%;
+    text-align: unset;
+  }
+  .statisticsDataContentEl {
+    font-size: 24px;
+    font-weight: 600 !important;
+  }
+  .statisticsDataContentParagraf {
+    color: #ffff;
+    font-size: 17px;
+    font-weight: 500 !important;
+    margin-top: -10px;
+  }
+}

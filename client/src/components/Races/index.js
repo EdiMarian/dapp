@@ -5,7 +5,7 @@ const races = [
     description: 'Get your Equistar horse, equip yourself and get ready to prove your riding skills in the race for 1st place. The other horses came in, what are you waiting for?',
     isActive: true,
     withEstar: false,
-    withEgld: true,
+    withEgld: false,
     payFee: false,
     maxEntryPerWallet: 8,
     entryFee: 0,
@@ -33,7 +33,7 @@ const races = [
     withEgld: false,
     isActive: true,
     payFee: true,
-    maxEntryPerWallet: 1,
+    maxEntryPerWallet: 8,
     entryFee: 100,
     ranking: [
       {
@@ -59,7 +59,7 @@ const races = [
     withEgld: true,
     isActive: true,
     payFee: true,
-    maxEntryPerWallet: 1,
+    maxEntryPerWallet: 7,
     entryFee: 0.05,
     ranking: [
       {

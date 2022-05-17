@@ -38,7 +38,7 @@ const Footer = () => {
         <ul
           className={`nav col-12 col-md-4 justify-content-end list-unstyled d-flex ${styles.icons}`}
         >
-          <li className='mr-3'>
+          <li style={{ marginRight: '10px' }}>
             <a
               className='text-muted'
               href='https://isengard.market/collection/EQUISTAR-3f393f'
@@ -48,7 +48,7 @@ const Footer = () => {
               <button className='btn btn-primary'>Mint</button>
             </a>
           </li>
-          <li className='mr-3'>
+          <li style={{ marginRight: '10px' }}>
             <a
               className='text-muted'
               href='https://www.instagram.com/estargames/'
@@ -58,7 +58,7 @@ const Footer = () => {
               <Instagram />
             </a>
           </li>
-          <li className='mr-3'>
+          <li style={{ marginRight: '10px' }}>
             <a
               className='text-muted'
               href='https://twitter.com/EstarToken'
@@ -68,7 +68,7 @@ const Footer = () => {
               <Twitter />
             </a>
           </li>
-          <li className='mr-3'>
+          <li style={{ marginRight: '10px' }}>
             <a
               className='text-muted'
               href='https://www.tiktok.com/@estar.games'
@@ -78,7 +78,7 @@ const Footer = () => {
               <TikTok />
             </a>
           </li>
-          <li className='mr-3'>
+          <li style={{ marginRight: '10px' }}>
             <a
               className='text-muted'
               href='https://www.youtube.com/channel/UCIIG8P1T9rMWjgUr-e34K3Q'
@@ -88,7 +88,7 @@ const Footer = () => {
               <Youtube />
             </a>
           </li>
-          <li className='mr-3'>
+          <li>
             <a
               className='text-muted'
               href='https://www.linkedin.com/company/estar-games/'

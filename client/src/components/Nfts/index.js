@@ -9,7 +9,7 @@ import { backend } from 'config';
 const Nfts = (props) => {
   const { address } = useGetAccountInfo();
   const [loading, setLoading] = useState(true);
-  const [nft, setNft] = useState([]);
+  const [nft, setNft] = useState(null);
   useEffect(() => {
    const s = io(backend);
    s.emit('get-status', address);
@@ -25,11 +25,13 @@ const Nfts = (props) => {
 
   if(loading) {
     return (
-      <div className="row">
-        <div className="col-12">
-          <div className="d-flex justify-content-center text-white">
-            <div className="spinner-border" role="status">
-              <span className="sr-only">Loading...</span>
+      <div className="container">
+        <div className="row">
+          <div className="col-12">
+            <div className="d-flex justify-content-center text-white">
+              <div className="spinner-border" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
             </div>
           </div>
         </div>
@@ -37,29 +39,29 @@ const Nfts = (props) => {
     );
   } else {
     return (
-      <div className='row'>
-        {nft != [] ? (
+      <div className="container">
+        <div className='row'>
+          {nft !== null ? (
           nft.map(({ fileUri, name, stamina, inRace, race }) => (
-            <div key={name} className='col-12 col-md-3 text-center'>
-              <img src={fileUri} className='rounded d-block mx-auto' height='250px' />
-              <p
-                style={props.color ? { color: props.color } : { color: 'white' }}
-              >
-                {name}
-              </p>
-                {props.withDetails ? <p className='text-white'>Stamina: {stamina}</p> : ''}
-                {inRace
-                  ?
+            <div key={name} className="col-12 col-md-3">
+              <div className={styles.boxNft}>
+                <div className={styles.boxNftContent}>
+                  <img src={fileUri} className={styles.img} />
+                  <h4 className={styles.name}>{name}</h4>
+                  <h3 className={styles.stamina}>Stamina: {stamina}</h3>
+                  {inRace ? (
                     <Link to={`/race/${race}`}>
-                      <button className='btn btn-primary'>Race</button>
+                      <button className={styles.btn}>View Race</button>
                     </Link>
-                  : ''
-                }
+                  ) : null}
+                </div>
+              </div>
             </div>
           ))
         ) : (
           <p>You don&apos;t have EquiStar Nfts.</p>
         )}
+        </div>
       </div>
     );
   }

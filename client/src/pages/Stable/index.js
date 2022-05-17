@@ -10,11 +10,14 @@ import Stable5 from '../../assets/Stable/5';
 import { backend } from 'config';
 import { reciveAddress } from '../../config';
 
+import styles from './styles.module.scss';
+
 const Stable = () => {
   const { address } = useGetAccountInfo();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [wait, setWait] = useState(false);
+  const [wait2, setWait2] = useState(true);
   const [paid, setPaid] = useState(false);
   const [socket, setSocket] = useState();
   const [currentLevel, setCurrentLevel] = useState();
@@ -60,6 +63,7 @@ const Stable = () => {
       setNextLevelStaminaMax(data.nextLevelStaminaMax);
       setNextLevelPriceHash(data.nextLevelPriceHash);
       setMessage(data.message);
+      setWait2(false);
     }
 
     s.emit('get-stable', address);
@@ -155,74 +159,87 @@ const Stable = () => {
     setWait(false);
   }
 
-  return (
+  if(wait2) {
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-12 mt-4">
+            <div className="d-flex justify-content-center text-white">
+              <div className="spinner-border" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  } else {
+    if(currentLevel < 5) {
+    return (
     <div className='container'>
       <div className="row">
-        <div className="col-12">
-          <div className="card">
-            <div className="card-header text-center">
-              <h1>Stable</h1>
+        <div className={"col-12 " + styles.padding}>
+          <div className={styles.stableBox}>
+            <div className={styles.stableBoxContent}>
+              <h1 className={styles.stableBoxContentTitle}>
+                Stable level {
+                  currentLevel !== 0 ? currentLevel : currentLevel + 1
+                }
+              </h1>
+              <button className={styles.stableBoxContentSubTitle}>
+                {
+                  currentLevel !== 0 ? `Level ${currentLevel + 1} increases the stamina to ${nextLevelStaminaMax}` : 'Level locked'
+                }
+              </button>
+              <div className={styles.stableBoxContentImage}>
+                {
+                  currentLevel !== 0 ? image : nextLevelImage
+                }
+              </div>
+              <h4 className={styles.stableBoxContentBenefit}>
+                Level #{currentLevel !== 0 ? currentLevel : currentLevel + 1} stable gives you the chance to have up to {staminaMax} stamina,  allowing you to participate in more races with your horses.
+              </h4>
             </div>
-            <div className="card-body h-4 text-center">
-              {currentLevel > 0 && currentLevel < 5 ? (
-                <div className="row py-2 px-2">
-                  <div className="col-md-6 col-12 bg-secondary rounded p-3">
-                    <h1>Level #{currentLevel}</h1>
-                    {image}
-                    <p>Level #{currentLevel} stable gives you the chance to have up to {staminaMax} stamina, allowing you to participate in more races with your horses.</p>
-                  </div>
-                  <div className="col-md-6 col-12 rounded p-3">
-                    <h1>Next level #{currentLevel + 1}</h1>
-                    {nextLevelImage}
-                    <p>Level #{currentLevel + 1} stable gives you the chance to have up to {nextLevelStaminaMax} stamina, allowing you to participate in more races with your horses.</p>
-                  </div>
-                </div>
-              ) : currentLevel == 0 ? (
-                <div className="row">
-                  <div className="col-12">
-                    <h1>Unlock level #1</h1>
-                    {nextLevelImage}
-                    <p>Level #{currentLevel + 1} stable gives you the chance to have up to {nextLevelStaminaMax} stamina, allowing you to participate in more races with your horses.</p>
-                  </div>
-                </div>
-              ) : (
-                <div className="row">
-                  <div className="col-12">
-                    <h1>Level #{currentLevel}</h1>
-                    {image}
-                    <p>Level #{currentLevel} stable gives you the chance to have up to {staminaMax} stamina, allowing you to participate in more races with your horses.</p>
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="card-footer">
-              {wait ? (
-                <button
-                  className='btn btn-warning d-block mx-auto'
-                >
-                  Loading...
-                </button>
-              ) : message != 'Max level' ? (
-                <button
-                  className='btn btn-primary d-block mx-auto'
-                  onClick={() => {
-                    sendTransaction();
-                    setWait(true);
-                  }}
-                >
-                  {message}
-                </button>
-              ) : (
-                <button disabled className='btn btn-danger d-block mx-auto'>
-                  <strong>{message}</strong>
-                </button>
-              )}
+          </div>
+          <button
+            onClick={() => sendTransaction()}
+            className={styles.stableUnlockBtn}
+          >
+            {message}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+  } else {
+    return (
+    <div className='container'>
+      <div className="row">
+        <div className={"col-12 " + styles.padding}>
+          <div className={styles.stableBox}>
+            <div className={styles.stableBoxContent}>
+              <h1 className={styles.stableBoxContentTitle}>
+                Stable level {
+                  currentLevel !== 0 ? currentLevel : currentLevel + 1
+                }
+              </h1>
+              <button className={styles.stableBoxContentSubTitle}>Max level</button>
+              <div className={styles.stableBoxContentImage}>
+                {
+                  currentLevel !== 0 ? image : nextLevelImage
+                }
+              </div>
+              <h4 className={styles.stableBoxContentBenefit}>
+                Level #{currentLevel !== 0 ? currentLevel : currentLevel + 1} stable gives you the chance to have up to {staminaMax} stamina,  allowing you to participate in more races with your horses.
+              </h4>
             </div>
           </div>
         </div>
       </div>
     </div>
   )
+  }
+  }
 }
 
 export default Stable;

@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useGetAccountInfo } from '@elrondnetwork/dapp-core';
 import { io } from 'socket.io-client';
 import { backend } from '../../../config';
+
+import styles from '../styles.module.scss';
 
 const RaceView = () => {
   const { address } = useGetAccountInfo();
@@ -55,37 +57,42 @@ const RaceView = () => {
                       ? (
                         <>
                           <div className='row'>
-                            <div className='col-12 text-white text-center'>
-                              <h1>Race #{race.id}</h1>
+                            <div className='col-12'>
+                              <h1 className={styles.raceViewTitle}>Race #{race.id}</h1>
                             </div>
                           </div>
                           <div className="row">
-                            <div className="col-12 text-white text-center">
-                              <h4>Players: {players}/8</h4>
+                            <div className="col-12">
+                              <h4 className={styles.raceViewPlayers}>Players: {players}/8</h4>
                             </div>
                           </div>
                           <div className='row'>
-                            <div className='col-12 text-white text-center'>
-                              <h3>The participants of this race are</h3>
+                            <div className='col-12'>
+                              <h3 className={styles.raceViewParticipants}>
+                                <span>[</span>Race participants<span>]</span>
+                              </h3>
                             </div>
                           </div>
                           <div className='row'>
                             {race.player.map((player) => (
                               <div
                                 key={player.horse}
-                                className='col-12 col-md-4 mb-2'
+                                className='col-12 col-md-4'
                               >
-                                <div className='card'>
-                                  <div className='card-body'>
+                                <div className={styles.raceViewCard}>
+                                  <div className={styles.raceViewCardContent}>
                                     <img
-                                      className='d-block mx-auto'
+                                      className={styles.raceViewCardContentImg}
                                       src={player.horseUrl}
-                                      height='250px'
                                     />
-                                    <h4 className='text-center'>
+                                    <h4 className={styles.raceViewCardContentHorseName}>
                                       {player.horse}
                                     </h4>
-                                    <h5>Address: <small>{player.address}</small></h5>
+                                    <h5
+                                      className={styles.raceViewCardContentAddress}
+                                    >
+                                      Address: <small>{player.address.substr(0, 8) + ' ... ' + player.address.substr(player.address.length - 8)}</small>
+                                    </h5>
                                   </div>
                                 </div>
                               </div>

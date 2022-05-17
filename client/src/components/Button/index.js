@@ -6,6 +6,8 @@ import { useGetAccountInfo } from '@elrondnetwork/dapp-core';
 import { Modal } from 'react-bootstrap';
 import { io } from 'socket.io-client';
 
+import styles from '../../pages/Race/styles.module.scss';
+
 const Button = ({ race }) => {
   const navigate = useNavigate();
   const { address } = useGetAccountInfo();
@@ -68,7 +70,7 @@ const Button = ({ race }) => {
   
   useEffect(() => {
     for(let i = 0; i < txSuccess.successfulTransactionsArray.length; i++) {
-      if(txSuccess.successfulTransactionsArray[i][0] == transactionSessionId) {
+      if(txSuccess.successfulTransactionsArray[i][0] === transactionSessionId) {
         setPaid(true);
       }
     }
@@ -138,7 +140,6 @@ const Button = ({ race }) => {
   }
 
   const enter = async (horse, url) => {
-    await setDelay(2000);
     const data = await {
         address: address,
         horse: horse,
@@ -162,11 +163,10 @@ const Button = ({ race }) => {
   return (
     <div className='container'>
       <button
-        className='d-block mx-auto btn text-white'
-        style={{ backgroundColor: race.color }}
+        className={styles.raceEnterBtn}
         onClick={() => available(race)}
       >
-        Enter
+        Join with {race.entryFee === 0 ? '25 stamina' : race.withEstar ? `${race.entryFee} Estar` : `${race.entryFee} EGLD`}
       </button>
       {/* Enter race modal */}
       <Modal

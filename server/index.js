@@ -8,6 +8,7 @@ const moment = require('moment');
 const express = require('express');
 const fs = require('fs');
 const https = require('https');
+const cors = require('cors');
 
 const Race = require('./models/Race');
 const Horse = require('./models/Horse');
@@ -15,6 +16,7 @@ const RaceHistory = require('./models/RaceHistory');
 const Stable = require('./models/Stable');
 const Tournament = require('./models/Tournament');
 const Reward = require('./models/Reward');
+const User = require('./models/User');
 
 dotenv.config();
 
@@ -31,6 +33,7 @@ if(local) {
   });
 } else {
   const app = express();
+  app.use(cors());
   const https_server = https.createServer({
     key: fs.readFileSync('key.key'),
     cert: fs.readFileSync('cert.crt')
@@ -38,7 +41,7 @@ if(local) {
 
   io = require('socket.io')({
     cors: {
-      origin: 'https://equistar.estar.games',
+      origin: '*',
       method: ['GET', 'POST', 'PATCH']
     }
   });
@@ -59,6 +62,7 @@ const http = axios.create({
 
 const collection = 'EQUISTAR-3f393f';
 const token = 'ESTAR-afaaf0';
+const airDropWallet = 'erd1y7233qxjvrectsc8fwtyrqrxnyaf6u8yaz3rfy45xa4lgaew93cqhnwled';
 
 const stables = [
     {
@@ -274,6 +278,7 @@ async function createRace(data) {
         horse: data.horse,
         horseUrl: fs.fileUri,
         feePaid: data.feePaid,
+        date: data.date,
       }
     ],
     date: moment().format("DD/MM/YYYY HH:mm")
@@ -307,13 +312,13 @@ async function updatePlayers(data) {
 async function bonus(bonus, horse) {
   let score = 0;
   if(bonus == "SPEED"){
-    score = horse.speed * 1 + horse.endurance * 1 + horse.agility * 1 + (horse.luck - 4 + (Math.random() * horse.luck));
+    score = 12 * (horse.speed / 100 + 2) + 10 * (horse.endurance / 100 + 2) + 10 * (horse.agility / 100 + 2) + (Math.floor(Math.random() * horse.luck) + 1);
   }
   if(bonus == "AGILITY"){
-    score = horse.speed * 1.2 + horse.endurance * 0.9 + horse.agility * 1.4 + (horse.luck - 4 + (Math.random() * horse.luck));
+    score = 10 * (horse.speed / 100 + 2) + 10 * (horse.endurance / 100 + 2) + 12 * (horse.agility / 100 + 2) + (Math.floor(Math.random() * horse.luck) + 1);
   }
   if(bonus == "ENDURANCE"){
-    score = horse.speed * 1.1 + horse.endurance * 1.3 + horse.agility * 0.9 + (horse.luck - 4 + (Math.random() * horse.luck));
+    score = 10 * (horse.speed / 100 + 2) + 12 * (horse.endurance / 100 + 2) + 10 * (horse.agility / 100 + 2) + (Math.floor(Math.random() * horse.luck) + 1);
   }
   return score;
 }
@@ -323,7 +328,12 @@ async function calculateScore(data) {
   for (let i = 0; i < data.player.length; i++) {
     const horse = await Horse.findOne({name: data.player[i].horse});
     let score = await bonus(data.bonus, horse);
-    result.push({address: data.player[i].address, horse: horse.name, score: score});
+    result.push({
+      address: data.player[i].address,
+      horse: horse.name,
+      score: score,
+      date: data.date
+    });
   }
   return result;
 }
@@ -384,7 +394,6 @@ function calculateReward(fee, percent) {
 }
 
 async function updatePlayersReward(winners, positions, exist, payWith) {
-  console.log(positions);
   if(exist) {
     const reward = await Reward.findOne({address: winners.address});
     if(payWith == 'ESTAR') {
@@ -524,6 +533,7 @@ async function startGame(id) {
     else rewardIn = data.with;
 
   await sendToWinnerReward(winners, data.entryFee, rewardIn);
+  const month = moment().format("MM");
   const raceHS = new RaceHistory({
     _id: data._id,
     raceId: id,
@@ -532,7 +542,9 @@ async function startGame(id) {
     with: data.with,
     winners: winners,
     player: result,
-    date: data.date
+    startDate: data.date,
+    endDate: moment().format("DD/MM/YYYY HH:mm"),
+    month: month
   });
   raceHS.save();
   for (let i = 0; i < data.player.length; i++) {
@@ -548,7 +560,140 @@ async function startGame(id) {
   });
 }
 
+  // General Stats functions
+
+  async function GetGeneralStats() {
+    const played = await (await RaceHistory.find()).length;
+    const onGoing = await (await Race.find()).length;
+    const rewards = await Reward.find();
+    const minted = await NbNftsMint();
+    var estar_rewards = 0;
+    var egld_rewards = 0;
+    for (let i = 0; i < rewards.length; i++) {
+      if(rewards[i].estar !== undefined) {
+        estar_rewards = estar_rewards + rewards[i].estar;
+      }
+      if(rewards[i].egld !== undefined) {
+        egld_rewards = egld_rewards + rewards[i].egld;
+      }
+    }
+    const data = {
+      races_played: played !== undefined ? played : 0,
+      races_ongoing: onGoing !== undefined ? onGoing : 0,
+      estar_rewards: estar_rewards.toFixed(2),
+      egld_rewards: egld_rewards.toFixed(3),
+      nfts_minted: minted.data,
+      total_nfts: 10010,
+    }
+
+    return data;
+  }
+
+ // Graphic functions
+
+ async function GetDailyRaces() {
+    const month = moment().format("MM");
+    const array = [];
+    const data = await RaceHistory.find({month: month});
+    for (let i = 0; i < data.length; i++) {
+      if(array.some(elem => elem.day === data[i].endDate.slice(0,10))) {
+        array.map(elem => {
+          if(elem.day === data[i].endDate.slice(0,10)) {
+            elem.k = elem.k + 1;
+          }
+        })
+      } else {
+        array.push({day: data[i].endDate.slice(0, 10), k: 1})
+      }
+    }
+    return array;
+  }
+
+  function toTimestamp(strDate) {  
+    const dt = Date.parse(strDate);  
+    return dt / 1000;  
+  } 
+
+  async function GetDailyAirDrop() {
+    const date = `${moment().format('MM') - 1}/31/${moment().format('YYYY')}`;
+    const timestamp = await toTimestamp(date);
+    const array = [];
+    try {
+      const { data } = await http.get(
+      '/accounts/' + airDropWallet + '/transfers?size=10000&sender=' + airDropWallet
+      + '&token=' + token + '&after=' + timestamp + '&order=desc'
+    );
+
+      for (let i = 0; i < data.length; i++) {
+      if(array.some(elem => elem.day === moment(data[i].timestamp * 1000).format('DD/MM/YYYY'))) {
+        array.map(elem => {
+          if(elem.day === moment(data[i].timestamp * 1000).format('DD/MM/YYYY')) {
+            elem.k = elem.k + data[i].action.arguments.transfers[0].value / 100;
+          }
+        })
+      } else {
+        array.push({day: moment(data[i].timestamp * 1000).format('DD/MM/YYYY'), k: data[i].action.arguments.transfers[0].value / 100})
+      }
+    }
+     return array;
+    } catch (error) {
+      console.log('Eroare GetDailyAirDrop : ' + error);
+    }
+  }
+
+
+  // Account statistics
+
+  async function GetAccountStatistics(address) {
+    const race_played =
+      await (await Race.find({'player.address': address})).length +
+      (await RaceHistory.find({'player.address': address})).length;
+    const race_won = await (await RaceHistory.find({'winners.address': address})).length;
+    const stable = await Stable.findOne({address: address});
+    var stable_level = 0;
+    const tournament_played = 0;
+    var winrate = 0;
+    if(race_played !== 0) {
+      winrate = ((race_won * 100)/race_played).toFixed(2);
+    }
+    const nfts = (await getNfts(address)).length;
+    const estar = (await fetchEstarWallet(address))[0].balance / 100;
+    const tournament_won = 0;
+    if(stable !== null) {
+      stable_level = stable.level;
+    }
+    const data = {
+      race_played: race_played,
+      winrate: winrate,
+      race_won: race_won,
+      nfts: nfts,
+      stable_level: stable_level,
+      estar: estar,
+      tournament_played: tournament_played,
+      tournament_won: tournament_won
+    }
+    return data;
+  }
+
+
+
 io.on('connection', socket => {
+
+  // general-stats
+
+  socket.on('get-general-stats', async () => {
+    const data = await GetGeneralStats();
+    socket.emit('recive-general-stats', data);
+  })
+
+  // Graphic
+
+  socket.on('get-daily', async () => {
+    const dailyRaces = await GetDailyRaces();
+    const dailyAirDrop = await GetDailyAirDrop();
+    socket.emit('recive-daily', dailyRaces, dailyAirDrop);
+  })
+
   socket.on('get-status', async address => {
     const mints = await NbNftsMint();
     const estar = await fetchEstarWallet(address);
@@ -596,16 +741,28 @@ io.on('connection', socket => {
   socket.on('enter-race', async data => {
     var message = '';
     var raceCr = '';
+    data.date = moment().format('DD/MM/YYYY HH:mm:ss');
     const exist = await checkIfRaceExist(data.raceId);
     if(!exist) {
       raceCr = await createRace(data);
       message = `You entered the race with ${data.horse}`;
+
+      const generalStats = await GetGeneralStats();
+      socket.broadcast.emit('recive-general-stats', generalStats);
+
     } else {
       const slots = await getSlots(data.raceId);
       if(slots == 7) {
           message = `You entered the race with ${data.horse}, and the game began.`;
           raceCr = await updatePlayers(data);
           startGame(data.raceId);
+
+      //     const races = await GetDailyRaces();
+      //     const airDrop = await GetDailyAirDrop();
+      //     socket.broadcast.emit('recive-daily', races, airDrop);
+      //     const generalStats = await GetGeneralStats();
+      //     socket.broadcast.emit('recive-general-stats', generalStats);
+
       } else if(slots != 7 && slots < 8) {
          raceCr = await updatePlayers(data);
           message = `You entered the race with ${data.horse}`;
@@ -648,12 +805,29 @@ io.on('connection', socket => {
 
   async function getRaceHistory(address) {
     var races = [];
-    const history = await RaceHistory.find({"player.address": address}).sort({date: -1});
+    const history = await RaceHistory.find({"player.address": address}).sort({endDate: -1});
     for(let i = 0; i < history.length; i++) {
-      races.push({id: history[i]._id, date: history[i].date});
+      const date = history[i].player.map(player => {
+        console.log(player);
+      })
+      races.push({id: history[i]._id, entryDate: history[i].startDate, endDate: history[i].endDate});
     }
     return races;
   }
+
+  async function getAllRaceHistory() {
+    var races = [];
+    const history = await RaceHistory.find().sort({endDate: -1});
+    for(let i = 0; i < history.length; i++) {
+      races.push({id: history[i]._id, startDate: history[i].startDate, endDate: history[i].endDate});
+    }
+    return races;
+  }
+
+  socket.on('get-all_history', async address => {
+    const races = await getAllRaceHistory(address)
+    socket.emit('recive-all_history', races);
+  });
 
   socket.on('get-history', async address => {
     const races = await getRaceHistory(address)
@@ -824,6 +998,63 @@ io.on('connection', socket => {
     }
   })
 
-  // Pana aici e versiunea Alpha 0.1.2 :))
+  // Pana aici e versiunea Alpha 0.1.05 :))
+
+  // Account
+
+  socket.on('load-account', async address => {
+    socket.join(address);
+
+    const account = await User.findOne({address: address});
+    if(account !== null) {
+      const accountStatistics = await GetAccountStatistics(address);
+      socket.emit('get-account', {account, accountStatistics, message: 'OK'});
+    }
+      else socket.emit('get-account', {account, message: 'NULL'});
+  })
+
+  socket.on('create-account', async (data) => {
+    var message = '';
+    if(data.username !== '') {
+      const checkExist = await User.findOne({username: data.username});
+      const existAccount = await User.findOne({address: data.address});
+      if(checkExist === null && existAccount == null) {
+        const new_user = new User({
+          address: data.address,
+          username: data.username,
+          admin: false
+        });
+        await new_user.save();
+
+        message = 'SUCCESS';
+        socket.emit('create-account_response', message)
+
+        const account = await User.findOne({address: data.address});
+        socket.to(data.address).emit('get-account', {account, message: 'OK'});
+      }
+      if(checkExist !== null) {
+        message = 'USER_EXIST';
+        socket.emit('create-account_response', message)
+      }
+    }
+  });
+
+  socket.on('edit-account', async (data) => {
+    var message = '';
+    const checkExist = await User.findOne({username: data.username});
+
+    if(checkExist === null) {
+      await User.updateOne({address: data.address}, {username: data.username});
+      message = 'SUCCESS';
+      socket.emit('edit-account_response', message);
+    } else {
+      message = 'USER_EXIST';
+      socket.emit('edit-account_response', message);
+    }
+
+    const account = await User.findOne({address: data.address});
+    const accountStatistics = await GetAccountStatistics(data.address);
+    socket.to(data.address).emit('get-account', {account, accountStatistics, message: 'OK'});
+  })
 
 });

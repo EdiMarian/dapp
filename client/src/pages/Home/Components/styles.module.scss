@@ -1,0 +1,155 @@
+.generalStatsTitle {
+  font-family: "Montserrat", sans-serif;
+  background: url("https://i.ibb.co/jZL8bQg/pattern.png") center / cover repeat;
+  background-color: #ffc300;
+  padding: 20px;
+  color: #000814;
+  text-align: center;
+  font-weight: 600 !important;
+  border-left: 10px solid #339cff;
+  border-right: 10px solid #339cff;
+  text-transform: uppercase;
+  font-style: italic;
+}
+.generalStats {
+  font-family: "Montserrat", sans-serif;
+  background: url("https://i.ibb.co/jZL8bQg/pattern.png") center / cover repeat;
+  background-color: #ffc300;
+  border-left: 10px solid #339cff;
+  border-right: 10px solid #339cff;
+  margin-top: 20px;
+}
+.generalStatsData {
+  vertical-align: middle;
+  padding: 20px 0 20px 21px;
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 7px 140px;
+}
+
+.statsDataEl {
+  text-transform: uppercase;
+  font-size: 19px;
+  font-weight: 400 !important;
+}
+
+.statsDataElParagraf {
+  margin-bottom: -10px;
+}
+
+.generalDistributionSp {
+  margin-top: 20px;
+  padding-top: 7px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: url("https://i.ibb.co/jZL8bQg/pattern.png") center / cover repeat;
+  background-color: #ffc300;
+  border-left: 10px solid #339cff;
+  border-right: 10px solid #339cff;
+}
+
+.generalDistribution {
+  font-family: "Montserrat", sans-serif;
+  padding: 6.95px;
+  padding-left: 25px;
+  padding-right: 50px;
+  font-size: 19px;
+  font-weight: 400 !important;
+  text-transform: uppercase;
+}
+
+// gameplayOverview
+
+.gameplayOverviewTitle {
+  color: #ffc300;
+  text-align: center;
+  margin-top: 14px;
+  padding: 7px;
+  text-transform: uppercase;
+  font-weight: 900 !important;
+  font-style: italic;
+}
+
+.gameplayOverviewSubTitle {
+  color: #000814;
+  font-size: 22px;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 500 !important;
+  margin-top: 14px;
+  margin-bottom: 14px;
+  padding: 7px;
+  background: url("https://i.ibb.co/jZL8bQg/pattern.png") center / cover repeat;
+  background-color: #ffc300;
+  border-left: 10px solid #339cff;
+  border-right: 10px solid #339cff;
+}
+
+.gameplayGraph {
+  width: 100%;
+  padding: 2px;
+  color: #fff;
+}
+
+@media screen and (max-width: 375px) {
+  .generalStatsData {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .generalDistributionSp {
+    display: block;
+  }
+  .generalDistribution {
+    line-height: 16px;
+  }
+  .generalDistribution:last-child {
+    margin-top: -10px;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .generalStatsTitle {
+    padding: 6px;
+    font-size: 23px;
+  }
+  .generalStats {
+    margin-top: 7px;
+  }
+  .generalStatsData {
+    grid-gap: 0px 0px;
+    padding: 10px 0 10px 21px;
+  }
+  .statsDataElParagraf {
+    margin-bottom: -7px;
+  }
+  .generalDistributionSp {
+    margin-top: 7px;
+  }
+  .generalDistribution {
+    font-size: 19px;
+    padding: 10px;
+  }
+}
+
+@media screen and (max-width: 1366px) {
+  .generalStats {
+    margin-top: -3.5px;
+  }
+  .generalDistributionSp {
+    margin-top: 3.5px;
+  }
+}
+
+@media screen and (min-width: 1366px) {
+  .generalStats {
+    margin-top: 15px;
+  }
+  .generalDistributionSp {
+    margin-top: 17px;
+  }
+  .generalDistribution {
+    font-size: 20px;
+    padding: 18px;
+  }
+}

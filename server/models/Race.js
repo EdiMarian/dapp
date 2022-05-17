@@ -39,6 +39,10 @@ const Race = new mongoose.Schema({
                         type: Boolean,
                         default: false
                   },
+                  date: {
+                        type: String,
+                        required: true
+                  },
                   _id: {
                         type: String,
                         required: false

@@ -24,19 +24,18 @@ const RaceHistory = () => {
 
   useEffect(() => {
     const s = io(backend);
-    s.emit('get-history', address);
+    s.emit('get-all_history', address);
 
     const handler = async races => {
       setHistory(races);
       makeLoading(500);
     }
-    s.on('recive-history', handler);
+    s.on('recive-all_history', handler);
 
     return () => {
       s.disconnect();
     }
   }, [])
-  console.log(history);
   if(loading) {
     return (
       <div className="d-flex justify-content-center text-white">
@@ -59,15 +58,17 @@ const RaceHistory = () => {
               <thead>
                 <tr className="text-center">
                   <th>Race id</th>
-                  <th>Date</th>
+                  <th>Entry Date</th>
+                  <th>End Date</th>
                   <th>Link</th>
                 </tr>
               </thead>
               <tbody>
                 {history.map((race) => (
                   <tr key={race.id} className="text-center">
-                    <td>{race.id}</td>
-                    <td>{race.date}</td>
+                    <td className="text-light">{race.id}</td>
+                    <td className="text-light">{race.startDate}</td>
+                    <td className="text-light">{race.endDate}</td>
                     <td className="text-center">
                       <Link
                         to={'/race/' + race.id}

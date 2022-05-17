@@ -1,103 +1,80 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
+import { io } from 'socket.io-client';
 
-import { Navbar, Container, Nav } from 'react-bootstrap';
+import { Navbar, Container, Nav, NavDropdown, Image } from 'react-bootstrap';
 
 import { logout, useGetAccountInfo } from '@elrondnetwork/dapp-core';
-import {
-  faWallet,
-  faPowerOff,
-  faHorse,
-  faBook,
-  faUser,
-  faList
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from 'assets/Logo';
 
-import modifiable from 'helpers/modifiable';
 import styles from './styles.module.scss';
-import axios from 'axios';
+import user from '../../../assets/img/user.png';
 
 const NavbarComponent = () => {
   let navigate = useNavigate();
-  const routeChange = (path) => {
-    navigate(path);
-  };
   const { address } = useGetAccountInfo();
-  const [heroTag, setHeroTag] = useState('');
-  const fetchHeroTag = `https://api.elrond.com/accounts/${address}`;
-  const getHeroTag = () => {
-    axios.get(fetchHeroTag).then((res) => setHeroTag(res.data.username));
-  };
-  useEffect(() => getHeroTag(), []);
+  
   const buttons = [
     {
-      icon: <FontAwesomeIcon icon={faWallet} />,
-      label: heroTag ? `@${heroTag.replace('.elrond', '')}` : address.substr(0, 8) + '...' + address.substr(address.length - 8),
-      onClick: () => navigator.clipboard.writeText(address)
-    },
-    {
-      icon: <FontAwesomeIcon icon={faHorse} />,
       label: 'Race',
-      onClick: () => routeChange('/race')
+      link: '/race'
     },
     {
-      icon: <FontAwesomeIcon icon={faBook} />,
       label: 'History',
-      onClick: () => routeChange('/raceHistory')
+      link: '/raceHistory'
     },
     {
-      icon: <FontAwesomeIcon icon={faList} />,
-      label: 'Category',
-      onClick: () => routeChange('/category')
+      label: 'Stable',
+      link: '/stable'
     },
     {
-      icon: <FontAwesomeIcon icon={faUser} />,
-      label: 'Account',
-      onClick: () => routeChange('/account')
+      label: 'Tournament',
+      link: '/tournament'
     },
     {
-      icon: <FontAwesomeIcon icon={faPowerOff} />,
-      label: 'Disconnect',
-      onClick: () => logout('/unlock')
+      label: 'Leaderboard',
+      link: '/leaderboard'
     }
   ];
 
   return (
-    <Navbar className={styles.nav} expand="md">
-      <Container fluid>
+    <Navbar expand="md" variant='dark'>
+      <Container fluid className="d-flex">
       <Navbar.Brand>
-        <Link to='/' className={styles.heading}>
+        <Link to='/' className='text-light text-decoration-none d-flex align-items-center'>
           <Logo width={50} height={50} />
-          <span className={styles.title + ' ml-3'}>Estar</span>
+          <span className={styles.title}>Equistar</span>
       </Link>
       </Navbar.Brand>
-      <Navbar.Toggle aria-controls="navbarScroll" className='bg-white' />
+      <Navbar.Toggle aria-controls="navbarScroll" />
       <Navbar.Collapse id="navbarScroll" className="justify-content-end">
 
       <Nav
-        className="me-auto my-2 my-lg-0"
+        className="align-items-center"
         style={{ maxHeight: '100px' }}
         navbarScroll
       >
-      <div className={styles.buttons}>
-        {buttons.map((button) => (
-          <div
+      <NavDropdown style={{ marginRight: "15px" }} title={
+        <Image src={user} height='40px' roundedCircle/>
+      }>
+        <NavDropdown.Item onClick={() => navigate('/account')}>
+          Account
+        </NavDropdown.Item>
+        <NavDropdown.Item>
+          <span onClick={() => logout()}>Log out</span>
+        </NavDropdown.Item>
+      </NavDropdown>
+      {buttons.map((button) => (
+          <Link
             key={button.label}
-            className={modifiable(
-              'button',
-              [button.onClick && 'clickable'],
-              styles
-            )}
-            onClick={button.onClick}
+            to={button.link}
+            className='mr-3 text-light text-decoration-none'
+            style={{ fontSize: '16.5px', marginRight: '15px' }}
           >
-            <div className={styles.icon}>{button.icon}</div>
-            <span>{button.label}</span>
-          </div>
+            {button.label}
+          </Link>
         ))}
-      </div>
     </Nav>
     </Navbar.Collapse>
     </Container>

@@ -1,3 +1,181 @@
 .card {
+  font-family: "Montserrat", sans-serif;
+  height: 100%;
+  width: 100%;
+  background: url("https://i.ibb.co/0Qqf3pg/pattern-stable-chenar.png") center /
+    cover no-repeat;
+  background-color: #f5bc00;
+  border-radius: 7px;
+}
+
+.cardContent {
+  padding: 20px 10px;
+}
+
+.raceName {
+  font-size: 20px;
+  font-weight: 800 !important;
+  color: #f5bc00;
+  background-color: #061527;
+  text-align: center;
+  text-transform: uppercase;
+  width: 100%;
+  display: block;
+  margin: 0 auto;
+  padding: 7px 10px;
+  border-radius: 7px;
+}
+
+.raceDescription {
+  font-size: 17px;
+  font-weight: 500 !important;
+  text-align: center;
+  padding: 0 2px;
+  margin: 12px 0;
+}
+
+.racePlayers {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 22px;
+  font-weight: 600 !important;
+  margin-top: 25px;
+}
+
+.racePlayersNB {
+  font-size: 24px;
+  font-weight: 600 !important;
+  color: #f5bc00;
+  background: url("https://i.ibb.co/2SWvVD3/pattern-chenar-race.png") center /
+    cover no-repeat;
+  background-color: #061527;
+  border-radius: 7px;
+  width: 180px;
+  padding: 12px 10px;
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.racePlayersNBSlash {
   color: #fff;
+  padding: 0px 2.5px;
+}
+
+.racePrize {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 20px;
+  font-weight: 600 !important;
+  margin-top: 15px;
+}
+
+.racePrizeContent {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 30px;
+}
+
+.racePrizeItem {
+  font-size: 15px;
+  text-transform: uppercase;
+  font-weight: 500 !important;
+}
+
+.raceEnterBtn {
+  font-size: 20px;
+  font-weight: 600 !important;
+  color: #f5bc00;
+  background: url("https://i.ibb.co/2SWvVD3/pattern-chenar-race.png") center /
+    cover no-repeat;
+  background-color: #061527;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 7px;
+  padding: 7px 12px;
+  display: block;
+  margin: 10px auto;
+}
+
+.raceViewTitle {
+  text-transform: uppercase;
+  font-family: "Montserrat", sans-serif;
+  font-size: 45px;
+  font-weight: 700 !important;
+  color: #f5bc00;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.raceViewPlayers {
+  text-transform: uppercase;
+  font-family: "Montserrat", sans-serif;
+  font-size: 28px;
+  font-weight: 700 !important;
+  color: #061527;
+  margin-top: 15px;
+  text-align: center;
+  background-color: #f5bc00;
+  border-left: 6px solid #4198eb;
+  border-right: 6px solid #4198eb;
+  width: 230px;
+  padding: 10px 10px;
+  display: block;
+  margin: 10px auto;
+}
+
+.raceViewParticipants {
+  color: #f5bc00;
+  font-size: 20px;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  font-family: "Montserrat", sans-serif;
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  span {
+    color: #4198eb;
+    font-weight: 700 !important;
+  }
+}
+
+.raceViewCard {
+  background: url("https://i.ibb.co/0Qqf3pg/pattern-stable-chenar.png") center /
+    cover no-repeat;
+  background-color: #f5bc00;
+  margin: 10px 0px;
+  border-radius: 7px;
+}
+
+.raceViewCardContent {
+  padding: 7px 10px;
+}
+
+.raceViewCardContentImg {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+}
+
+.raceViewCardContentHorseName {
+  color: #061527;
+  font-family: "Montserrat", sans-serif;
+  font-size: 25px;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.raceViewCardContentAddress {
+  color: #061527;
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+  font-weight: 500 !important;
+  text-transform: uppercase;
+  margin-top: 20px;
+  text-align: center;
+
+  small {
+    text-transform: none;
+  }
 }

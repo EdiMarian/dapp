@@ -11,6 +11,8 @@ import Leaderboard from 'pages/Leaderboard';
 import RaceHistory from 'pages/RaceHistory';
 import Route from 'pages/Category';
 import Account from 'pages/Account';
+import EditAccount from 'pages/Account/Edit';
+import CreateAccount from 'pages/Account/Create';
 
 export interface RouteType {
   path: string;
@@ -33,6 +35,8 @@ export const routeNames = {
   tournament: '/tournament',
   leaderboard: '/leaderboard',
   account: '/account',
+  createAccount: '/account/create',
+  editAccount: '/account/edit',
 };
 
 const routes: Array<RouteType> = [
@@ -80,6 +84,16 @@ const routes: Array<RouteType> = [
     path: routeNames.account,
     title: 'Account',
     component: Account
+  },
+  {
+    path: routeNames.createAccount,
+    title: 'Create Account',
+    component: CreateAccount
+  },
+  {
+    path: routeNames.editAccount,
+    title: 'Edit Account',
+    component: EditAccount
   }
 ];
 

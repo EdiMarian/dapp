@@ -1,0 +1,94 @@
+.padding {
+  padding: 0 50px;
+}
+
+.stableBox {
+  width: 100%;
+  background: url("https://i.ibb.co/0Qqf3pg/pattern-stable-chenar.png") center /
+    cover no-repeat;
+  background-color: #ffff;
+  margin-top: 30px;
+  border-radius: 7px;
+}
+
+.stableBoxContent {
+  padding: 30px;
+  font-family: "Montserrat", sans-serif;
+  text-align: center;
+}
+
+.stableBoxContentTitle {
+  color: #061527;
+  text-transform: uppercase;
+  font-size: 36px;
+  font-weight: 800 !important;
+}
+
+.stableBoxContentSubTitle {
+  font-size: 20px;
+  font-weight: 700 !important;
+  background-color: #061527;
+  color: #f5bc00;
+  width: 300px;
+  border-radius: 7px;
+  border: none;
+  pointer-events: none;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  margin-top: 7px;
+}
+
+.stableBoxContentImage {
+  width: 60%;
+  height: 250px;
+  //   background-color: #7c9121;
+  margin: 20px auto;
+  -webkit-filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.7));
+  filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.5));
+}
+
+.stableBoxContentBenefit {
+  font-size: 18px;
+  font-weight: 500 !important;
+  color: #061527;
+  width: 60%;
+  display: block;
+  margin: 0 auto;
+}
+
+.stableUnlockBtn {
+  text-transform: uppercase;
+  font-size: 25px;
+  color: #061527;
+  background-color: #f5bc00;
+  width: 600px;
+  display: block;
+  margin: 20px auto;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 7px;
+  font-weight: 700 !important;
+  font-family: "Montserrat", sans-serif;
+}
+
+@media screen and (max-width: 768px) {
+  .stableBoxContentTitle {
+    font-size: 24px;
+  }
+  .stableBoxContentSubTitle {
+    font-size: 18px;
+  }
+  .stableBoxContentSubTitle {
+    width: 100%;
+  }
+  .stableBoxContentImage {
+    width: 100%;
+  }
+  .stableBoxContentBenefit {
+    width: 100%;
+  }
+  .stableUnlockBtn {
+    font-size: 15px;
+    width: 100%;
+  }
+}
