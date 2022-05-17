@@ -52,7 +52,7 @@ const NavbarComponent = () => {
 
       <Nav
         className="align-items-center"
-        style={{ maxHeight: '100px' }}
+        style={{ maxHeight: '200px' }}
         navbarScroll
       >
       <NavDropdown style={{ marginRight: "15px" }} title={
