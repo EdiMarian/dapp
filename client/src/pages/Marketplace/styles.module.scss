@@ -1,0 +1,66 @@
+.title {
+  text-transform: uppercase;
+  text-align: center;
+  margin-top: 20px;
+
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800 !important;
+  font-size: 40px;
+  letter-spacing: 2px;
+
+  color: #f5bc00;
+}
+
+.Marketplace_ItemCard {
+  background: url("https://i.ibb.co/jZL8bQg/pattern.png") center / cover repeat;
+  background-color: #f5bc00;
+  border-radius: 7px;
+}
+
+.Marketplace_ItemCardContent {
+  padding: 10px 15px;
+}
+
+.Marketplace_ItemCardContentImg {
+  width: 100%;
+}
+
+.Marketplace_ItemCardContentName {
+  font-size: 20px;
+  text-transform: uppercase;
+  font-weight: 600 !important;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.Marketplace_ItemCardContentDescription {
+  font-size: 13px;
+  text-transform: uppercase;
+  font-weight: 400 !important;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.Marketplace_ItemCardContentAvailable {
+  font-size: 15px;
+  text-transform: uppercase;
+  font-weight: 600 !important;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.buyBtn {
+  font-family: "Montserrat", sans-serif;
+  font-size: 15px;
+  font-weight: 600 !important;
+  color: #f5bc00;
+  background: url("https://i.ibb.co/2SWvVD3/pattern-chenar-race.png") center /
+    cover no-repeat;
+  background-color: #061527;
+  border-radius: 7px;
+  border: none;
+  padding: 7px 10px;
+  text-transform: uppercase;
+  display: block;
+  margin: 10px auto;
+}

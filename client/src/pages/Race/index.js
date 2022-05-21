@@ -21,7 +21,7 @@ const Race = () => {
     <div className='container'>
       <div className='row mt-4'>
         {races.map((race) => (
-          <div key={race.id} className='col-12 col-md-6 col-lg-4 mb-4 px-lg-4'>
+          <div key={race.id} className='col-12 col-md-6 col-lg-4 mb-4'>
             <div className={styles.card}>
               <div className={styles.cardContent}>
                 <h3 className={styles.raceName}>

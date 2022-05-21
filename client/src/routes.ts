@@ -13,6 +13,7 @@ import Route from 'pages/Category';
 import Account from 'pages/Account';
 import EditAccount from 'pages/Account/Edit';
 import CreateAccount from 'pages/Account/Create';
+import Marketplace from 'pages/Marketplace';
 
 export interface RouteType {
   path: string;
@@ -32,6 +33,7 @@ export const routeNames = {
   raceHistory: '/raceHistory',
   route: '/category',
   stable: '/stable',
+  marketplace: '/marketplace',
   tournament: '/tournament',
   leaderboard: '/leaderboard',
   account: '/account',
@@ -61,14 +63,14 @@ const routes: Array<RouteType> = [
     component: RaceHistory
   },
   {
-    path: routeNames.route,
-    title: 'Category',
-    component: Route
-  },
-  {
     path: routeNames.stable,
     title: 'Stable',
     component: Stable
+  },
+  {
+    path: routeNames.marketplace,
+    title: 'Marketplace',
+    component: Marketplace
   },
   {
     path: routeNames.tournament,

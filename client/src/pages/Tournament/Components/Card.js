@@ -10,17 +10,6 @@ const Card = ({ active, tournament, address, socket }) => {
   const [maxPlayers, setMaxPlayers] = useState(0);
   const [endDate, setEndDate] = useState('');
 
-  function setDelay(ms) {
-    return new Promise((resolve, reject) => {
-      setTimeout(resolve, ms);
-    })
-  }
-
-  async function makeLoading(ms) {
-    await setDelay(ms);
-    setLoading(false);
-  }
-
   // Tournament status
 
   useEffect(() => {
@@ -29,7 +18,7 @@ const Card = ({ active, tournament, address, socket }) => {
       setMaxPlayers(tournament.maxPlayers)
       setNumberOfPlayers(tournament.players.length);
       setEndDate(tournament.end);
-      makeLoading(500);
+      setLoading(false);
     };
   }, [tournament])
 

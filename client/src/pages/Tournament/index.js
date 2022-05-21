@@ -10,7 +10,7 @@ const Tournament = () => {
   const { address } = useGetAccountInfo();
   const navigate = useNavigate();
   const [socket, setSocket] = useState();
-  const soon = true;
+  const soon = false;
   const [loading, setLoading] = useState(true);
   const [isActive, setIsActive] = useState(false);
   const [tournament, setTournament] = useState(null);

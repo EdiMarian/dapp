@@ -29,6 +29,10 @@ const NavbarComponent = () => {
       link: '/stable'
     },
     {
+      label: 'Marketplace',
+      link: '/marketplace'
+    },
+    {
       label: 'Tournament',
       link: '/tournament'
     },

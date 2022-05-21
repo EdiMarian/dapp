@@ -17,6 +17,7 @@ const Stable = require('./models/Stable');
 const Tournament = require('./models/Tournament');
 const Reward = require('./models/Reward');
 const User = require('./models/User');
+const Marketplace = require('./models/Marketplace_item');
 
 dotenv.config();
 
@@ -164,6 +165,14 @@ const stables = [
     await agenda.every("6 hours", "regeneration");
   })();
 
+  function numHex(s) {
+    var a = s.toString(16);
+    if((a.length % 2) > 0) {
+      a = "0" + a;
+    }
+    return a;
+  }
+
 function setDelay(ms) {
   return new Promise((resolve, reject) => {
     setTimeout(resolve, ms);
@@ -200,7 +209,11 @@ async function fetchEstarWallet(wallet) {
     const { data } = await http.get(
       '/accounts/' + wallet + '/tokens?identifier=' + token
     );
-    return data;
+    if(data[0] === undefined) {
+      return 0;
+    } else {
+      return data[0].balance;
+    }
   } catch (error) {
     return error;
   }
@@ -657,7 +670,7 @@ async function startGame(id) {
       winrate = ((race_won * 100)/race_played).toFixed(2);
     }
     const nfts = (await getNfts(address)).length;
-    const estar = (await fetchEstarWallet(address))[0].balance / 100;
+    const estar = (await fetchEstarWallet(address)) / 100;
     const tournament_won = 0;
     if(stable !== null) {
       stable_level = stable.level;
@@ -673,6 +686,45 @@ async function startGame(id) {
       tournament_won: tournament_won
     }
     return data;
+  }
+
+  // Marketplace functions
+
+  async function CheckItemExistInInventoryOrMaxHolders(data) {
+    const maxUsers = await User.find({'inventory.itemId': data.itemId});
+    const user = await User.findOne({address: data.address});
+    var exist = false;
+
+    user.inventory.map((item) => {
+      if(item.itemId === data.itemId) {
+        exist = true;
+      }
+    });
+
+    if(exist) {
+      return 'EXIST';
+    } else if(!exist && maxUsers.length === data.maxHolders) {
+      return 'MAX_HOLDERS'
+    } else if(!exist) return 'NO_EXIST';
+  }
+
+  async function UpdateUserInventory(data) {
+    try {
+      await User.findOneAndUpdate({address: data.address}, {
+        $push: {
+          inventory: {
+            itemId: data.itemId,
+            name: data.name,
+          }
+        }
+      });
+      if(data.available !== 0) {
+        await Marketplace.findByIdAndUpdate(data.itemId, {available: data.available - 1});
+      }
+      return 'SUCCESS';
+    } catch (error) {
+      return 'ERROR ' + error;
+    }
   }
 
 
@@ -1055,6 +1107,39 @@ io.on('connection', socket => {
     const account = await User.findOne({address: data.address});
     const accountStatistics = await GetAccountStatistics(data.address);
     socket.to(data.address).emit('get-account', {account, accountStatistics, message: 'OK'});
+  })
+
+  // Marketplace
+
+  socket.on('get-market-items', async () => {
+    const items = await Marketplace.find().sort({date: -1 });
+    
+    if(items === []) socket.emit('recive-market-items', null);
+      socket.emit('recive-market-items', items);
+
+    socket.on('try-to-buy-marketplace-item', async data => {
+      if(data.paid) {
+        
+        const bought = await UpdateUserInventory(data);
+        const items = await Marketplace.find().sort({date: -1});
+        if(items === []) {
+          socket.boradcast.emit('recive-market-items', null);
+          socket.emit('recive-market-items', null);
+        } else {
+          socket.broadcast.emit('recive-market-items', items);
+          socket.emit('recive-market-items', items);
+        }
+
+        const { username } = await User.findOne({address: data.address});
+
+        console.log(username + ' a cumparat ' + data.name);
+      } else {
+        const { price } = await Marketplace.findOne({_id: data.itemId});
+        const priceHash = await numHex(price * 100);
+        const response = await CheckItemExistInInventoryOrMaxHolders(data);
+        socket.emit('recive-response-from-marketplace', response, priceHash);
+      }
+    })
   })
 
 });
