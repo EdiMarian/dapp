@@ -6,17 +6,6 @@ const CarouselComponent = () => {
     <Carousel>
       <Carousel.Item interval={5000}>
         <a
-          href="https://isengard.market/collection/EQUISTAR-3f393f"
-          target="_blank" rel="noopener noreferrer"
-        >
-          <img
-            className="d-block w-100"
-            src="https://i.ibb.co/DptVGhX/isengard.png"
-          />
-        </a>
-      </Carousel.Item>
-      <Carousel.Item interval={5000}>
-        <a
           href="https://www.frameit.gg/marketplace/EQUISTAR-3f393f/sale"
           target="_blank" rel="noopener noreferrer"
         >

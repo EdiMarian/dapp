@@ -1,4 +1,4 @@
-const local = true;
+const local = false;
 
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -869,10 +869,20 @@ io.on('connection', socket => {
 
   async function getAllRaceHistory() {
     var races = [];
-    const history = await RaceHistory.find().sort({endDate: -1});
+    
+    const history = await RaceHistory.find();
     for(let i = 0; i < history.length; i++) {
       races.push({id: history[i]._id, startDate: history[i].startDate, endDate: history[i].endDate});
     }
+
+    for(let j = 0; j < races.length; j++) {
+      races[j].dateSort = new Date(races[j].endDate);
+    }
+
+    races.sort(function(a,b){
+      return b.dateSort - a.dateSort;
+    });
+
     return races;
   }
 

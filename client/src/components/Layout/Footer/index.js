@@ -41,7 +41,7 @@ const Footer = () => {
           <li style={{ marginRight: '10px' }}>
             <a
               className='text-muted'
-              href='https://isengard.market/collection/EQUISTAR-3f393f'
+              href='https://www.frameit.gg/marketplace/EQUISTAR-3f393f/sale'
               target='_blank'
               rel='noopener noreferrer'
             >

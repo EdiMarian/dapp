@@ -11,7 +11,7 @@ const Buy = ({ item, socket, address }) => {
 
   const [show, setShow] = useState(false);
   const [error, setError] = useState(false);
-  const [wait, setWait] = useState(false);
+  const [disable, setDisable] = useState(false);
   var price = null;
   const [message, setMessage] = useState(null);
   const [transactionSessionId, setTransactionSessionId] = useState(null);
@@ -60,8 +60,8 @@ const Buy = ({ item, socket, address }) => {
 
   async function buyItem(check) {
     if(check) {
-      
-      var readyForBuy = false;
+      if(!disable) {
+        var readyForBuy = false;
 
       socket.emit('try-to-buy-marketplace-item', data);
       await new Promise(resolve => {
@@ -76,6 +76,7 @@ const Buy = ({ item, socket, address }) => {
             setMessage('You already have this item.');
             setShow(true);
           } else if(response === 'NO_EXIST') {
+            setDisable(true);
             readyForBuy = true;
           } else if(response === 'ERROR') {
             setError(true);
@@ -88,9 +89,11 @@ const Buy = ({ item, socket, address }) => {
       if(Boolean(readyForBuy)) {
         sendTransaction();
       }
+      }
     } else {
       data.paid = true;
       socket.emit('try-to-buy-marketplace-item', data);
+      window.location.reload(false);
     }
   }
 
